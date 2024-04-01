@@ -2,16 +2,10 @@ import React, {useEffect, useState} from 'react'
 import { apiGetCategories } from '../apis/app'
 import {NavLink} from 'react-router-dom'
 import {creatSlug} from '../ultils/helper'
+import { useSelector } from 'react-redux'
 
 const Sidebar = () => {
-  const [categories, setCategory] = useState(null)
-  const fecthCategories = async() => {
-    const response = await apiGetCategories()
-    if(response.success) setCategory(response.prodCategories)
-  }
-  useEffect(()=>{
-    fecthCategories()
-  }, [])
+  const {categories} = useSelector(state => state.app)
   return (
     <div className='flex flex-col border'>
       {categories?.map(el => (

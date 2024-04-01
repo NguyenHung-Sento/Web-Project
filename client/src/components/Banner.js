@@ -7,7 +7,7 @@ const Banner = () => {
       <img 
       src={ads1}
       alt='banner'
-      className='w-full object-contain'
+      className='w-full object-cover'
       />
     </div>
   )

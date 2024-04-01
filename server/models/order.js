@@ -1,17 +1,16 @@
 const mongoose = require('mongoose'); 
 
 var orderSchema = new mongoose.Schema({
-    product:[{
+    products:[{
         product: {type: mongoose.Types.ObjectId, ref: 'Product'},
         count: Number,
     }],
     status:{
         type:String,
         default:'Proccessing',
-        enum: ['Cancelled', 'Proccessing', 'Successed']
+        enum: ['Cancelled', 'Proccessing', 'Succeed']
     },
     total: Number,
-    paymentIntend:{},
     orderBy:{
         type:mongoose.Types.ObjectId,
         ref: 'User',
