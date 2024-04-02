@@ -9,9 +9,8 @@ var productCategorySchema = new mongoose.Schema({
         index:true,
     },
     productType:{
-        type:String,
-        required:true,
-        unique:true,
+        type: Array,
+        required: true,
     },
     brand:{
         type: Array,

@@ -36,6 +36,10 @@ var productSchema = new mongoose.Schema({
         type:Number,
         default:0,
     },
+    thumb:{
+        type:Array,
+        required:true,
+    },
     images:{
         type:Array,
     },

@@ -10,5 +10,6 @@ router.get('/:pid', ctrls.getProduct)
 router.put('/:pid',[verifyAccessToken, isAdmin], ctrls.updateProduct)
 router.delete('/:pid',[verifyAccessToken, isAdmin] , ctrls.deleteProduct)
 router.put('/uploadimage/:pid',[verifyAccessToken, isAdmin] ,uploader.array('images', 10), ctrls.uploadImagesProduct)
+router.put('/uploadthumb/:pid',[verifyAccessToken, isAdmin] ,uploader.array('thumb', 1), ctrls.uploadThumbProduct)
 
 module.exports = router
