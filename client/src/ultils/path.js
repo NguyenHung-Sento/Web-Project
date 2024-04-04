@@ -4,7 +4,9 @@ const path = {
     ALL: '*',
     LOGIN: 'login',
     PRODUCTS: 'products',
-    ABOUT: 'about'
+    ABOUT: 'about',
+    DETAIL_PRODUCT__PID__TITLE: 'san-pham/:pid/:title',
+    DETAIL_PRODUCT: 'san-pham'
 }
 
 export default path

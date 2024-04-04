@@ -12,7 +12,7 @@ const Sidebar = () => {
           <NavLink 
           key = {creatSlug(el.title)}
           to = {creatSlug(el.title)}
-          className={({isActive}) => isActive? 'bg-main text-white px-5 pt-[15px] pb-[14px] text-sm' : 'px-5 pt-[15px] pb-[14px] text-sm hover:text-main'}
+          className={({isActive}) => isActive? 'bg-main text-white px-5 pt-[15px] pb-[14px] text-[16px]' : 'px-5 pt-[15px] pb-[14px] text-[16px] hover:text-main'}
           >
             {el.title}
           </NavLink>

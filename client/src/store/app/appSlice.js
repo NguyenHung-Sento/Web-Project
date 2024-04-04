@@ -8,10 +8,7 @@ export const appSlice = createSlice({
         isLoading: false
     },
     reducers: {
-        // logout:(state) => {
-        //     state.isLoading = false
-        // }
-
+   
     },
     extraReducers: (builder) => {
         builder.addCase(actions.getCategories.pending, (state) => {
