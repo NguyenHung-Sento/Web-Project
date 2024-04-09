@@ -1,34 +1,38 @@
 import { createSlice } from "@reduxjs/toolkit";
-
+import * as actions from './asyncActions'
 
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
         isLogedIn: false,
         current: null,
-        token: null
+        token: null,
+        isLoading: false
     },
     reducers: {
-        register: (state, action) => {
+        login: (state, action) => {
             state.isLogedIn = action.payload.isLogedIn
-            state.current = action.payload.userData
             state.token = action.payload.token
-        }
+        },
+        logout: (state, action) => {
+            state.isLogedIn = false
+            state.token = null
+        },
     },
-    // extraReducers: (builder) => {
-    //     builder.addCase(actions.getCategories.pending, (state) => {
-    //         state.isLoading = true;
-    //     });
-    //     builder.addCase(actions.getCategories.fulfilled, (state,action) => {
-    //         state.isLoading = false;
-    //         state.categories = action.payload;
-    //     });
-    //     builder.addCase(actions.getCategories.rejected, (state,action) => {
-    //         state.isLoading = false;
-    //         state.errorMessage = 'Failed';
-    //     });
+    extraReducers: (builder) => {
+        builder.addCase(actions.getCurrent.pending, (state) => {
+            state.isLoading = true;
+        });
+        builder.addCase(actions.getCurrent.fulfilled, (state,action) => {
+            state.isLoading = false;
+            state.current = action.payload;
+        });
+        builder.addCase(actions.getCurrent.rejected, (state,action) => {
+            state.isLoading = false;
+            state.current = null;
+        });
 
-    // }
+    }
 })
-export const {register} = userSlice.actions
+export const {login, logout} = userSlice.actions
 export default userSlice.reducer

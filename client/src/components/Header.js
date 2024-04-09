@@ -26,11 +26,11 @@ const Header = () => {
           </span>
           <span>Hỗ trợ trực tuyến 24/7</span>
         </div>
-        <div className='flex items-center px-6 border-r justify-center gap-2'>
+        <div className='flex items-center px-6 border-r justify-center gap-2 cursor-pointer'>
           <BsCart4 color='#156082' size={24} />
           <span>0 items</span>
         </div>
-        <div className='flex items-center px-6 justify-center'>
+        <div className='flex items-center px-6 justify-center cursor-pointer'>
           <FaCircleUser color='#156082' size={24} />
         </div>
       </div>

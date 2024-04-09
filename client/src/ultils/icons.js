@@ -4,6 +4,8 @@ import { BsCart4 } from "react-icons/bs";
 import { FaCircleUser } from "react-icons/fa6";
 import { FaHome } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
+import { IoIosArrowForward } from "react-icons/io";
+import { CiLogout } from "react-icons/ci";
 
 const icons = {
     FaPhone,
@@ -12,6 +14,8 @@ const icons = {
     FaCircleUser,
     FaHome,
     IoMenu,
+    IoIosArrowForward,
+    CiLogout
 }
 
 export default icons

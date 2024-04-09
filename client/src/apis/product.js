@@ -6,3 +6,8 @@ export const apiGetProducts = (params, query) => axios({
     params,
     query
 })
+
+export const apiGetProduct = (pid) => axios({
+    url: '/product/' + pid,
+    method: 'get',
+})

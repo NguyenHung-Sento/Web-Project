@@ -11,3 +11,8 @@ export const apiLogin = (data) => axios({
     method: 'post',
     data
 })
+
+export const apiGetCurrent = () => axios({
+    url: '/user/current',
+    method: 'get',
+})

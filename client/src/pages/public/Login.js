@@ -1,11 +1,11 @@
-import React, { useState, useCallback, useDebugValue } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import loginpage from '../../assets/loginpage.jpg'
 import { InputField, Button } from '../../components'
 import { apiRegister, apiLogin } from '../../apis/user'
 import Swal from 'sweetalert2'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import path from '../../ultils/path'
-import {register} from '../../store/user/userSlice'
+import { login } from '../../store/user/userSlice'
 import { useDispatch } from 'react-redux'
 
 const Login = () => {
@@ -29,6 +29,10 @@ const Login = () => {
       mobile: ''
     })
   }
+
+  // useEffect(() => {
+  //   resetPayload()
+  // }, [isRegister])
   const handleSubmit = useCallback(async () => {
     const { firstname, lastname, mobile, ...data } = payload
     if (isRegister) {
@@ -44,7 +48,7 @@ const Login = () => {
     } else {
       const rs = await apiLogin(data)
       if (rs.success) {
-        dispatch(register({isLogedIn: true, token: rs.accessToken, userData: rs.userData}))
+        dispatch(login({ isLogedIn: true, token: rs.accessToken, userData: rs.userData }))
         navigate(`/${path.HOME}`)
       } else {
         Swal.fire('Oops~', rs.mes, 'error')
@@ -91,7 +95,7 @@ const Login = () => {
             type='password'
           />
           <Button
-            name={isRegister ? 'Register' : 'Login'}
+            children={isRegister ? 'Register' : 'Login'}
             handleOnClick={handleSubmit}
             fw
           />
@@ -105,8 +109,8 @@ const Login = () => {
               className='text-gray-500 w-full text-center hover:underline cursor-pointer'
               onClick={() => setIsRegister(false)}
             >Về đăng nhập</span>}
-
           </div>
+          <Link className='text-gray-500 w-full text-center hover:underline cursor-pointer text-sm' to={`/${path.HOME}`}>Về trang chủ</Link>
         </div>
       </div>
     </div>
