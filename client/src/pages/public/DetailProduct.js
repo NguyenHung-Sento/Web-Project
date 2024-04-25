@@ -1,10 +1,12 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams} from 'react-router-dom'
 import { apiGetProduct } from '../../apis'
 import Slider from 'react-slick'
 import {formatMoney, formatSold} from '../../ultils/helper'
 import {Button, SelectQuantity, ProductInfomation} from '../../components'
-import {toast} from 'react-toastify'
+import {Breadcrumbs} from '../../components'
+import { useSelector } from 'react-redux'
+import Swal from 'sweetalert2'
 
 const settings = {
   dots: false,
@@ -19,6 +21,14 @@ const DetailProduct = () => {
   const { pid, title } = useParams()
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
+  // const {user} = useSelector(state => state.user)
+  const handleOnClick = () => {
+      return Swal.fire({
+        title:'Thành công',
+        text:'Hãy xem giỏ hàng của bạn',
+        icon:'success'
+      })
+  }
 
   const fetchProductData = async() => {
     const response = await apiGetProduct(pid)
@@ -42,8 +52,9 @@ const DetailProduct = () => {
   return (
     <div className='w-full'>
       <div className='h-[81px] flex justify-center items-center bg-gray-100'>
-        <div className='w-main'>
+        <div className='w-main flex flex-col gap-2'>
           <h3 className='font-semibold'>CHI TIẾT SẢN PHẨM</h3>
+          <Breadcrumbs title={title}  category={product?.category} productType={product?.productType}/>
         </div>
       </div>
       <div className='w-main m-auto mt-4 flex'>
@@ -71,7 +82,7 @@ const DetailProduct = () => {
         </div>
         <div className='border rounded-lg w-1/5 flex flex-col gap-8 items-center'>
           <SelectQuantity quantity={quantity} handleQuantity={handleQuantity} handleChangeQuantity={handleChangeQuantity} />
-          <Button style={'px-4 py-2 my-2 rounded-md text-white bg-main text-semibold hover:bg-cyan-900 w-full'} children={'Mua hàng'} />
+          <Button handleOnClick={handleOnClick} style={'px-4 py-2 my-2 rounded-md text-white bg-main text-semibold hover:bg-cyan-900 w-full'} children={'Mua hàng'} />
         </div>
       </div>
       <div className='w-main m-auto mt-8'>

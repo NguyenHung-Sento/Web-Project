@@ -15,7 +15,7 @@ const Home = () => {
       <div className='w-main flex'>
         <div className='flex flex-col gap-5 w-[25%] flex-auto '>
           <Sidebar />
-          <DealDaily />
+          {/* <DealDaily /> */}
         </div>
         <div className='flex flex-col gap-5 pl-5 w-[75%] flex-auto'>
           <Banner />
@@ -39,7 +39,7 @@ const Home = () => {
                   <h4 className='font-semibold uppercase mb-2'>{el.title}</h4>
                   <ul className='text-sm'>
                     {el?.productType?.map(item => (
-                      <span className='flex gap-1 items-center text-gray-500'>
+                      <span key={item} className='flex gap-1 items-center text-gray-500'>
                         <span><IoIosArrowForward /></span>
                         <li key={item}>{item}</li>
                       </span>

@@ -1,7 +1,7 @@
-import React from 'react'
-import { formatMoney } from '../ultils/helper'
+import React, {memo} from 'react'
+import { formatMoney } from '../../ultils/helper'
 import { Link } from 'react-router-dom'
-import path from '../ultils/path'
+import path from '../../ultils/path'
 
 const ProductCard = ({ image, price, title, _id }) => {
     return (
@@ -20,4 +20,4 @@ const ProductCard = ({ image, price, title, _id }) => {
     )
 }
 
-export default ProductCard
+export default memo(ProductCard)

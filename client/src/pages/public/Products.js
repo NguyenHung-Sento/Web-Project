@@ -1,45 +1,129 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { apiGetProducts } from '../../apis'
-import { formatMoney, formatSold } from '../../ultils/helper'
-import { Link } from 'react-router-dom'
-import path from '../../ultils/path'
+import { creatSlug } from '../../ultils/helper'
+import { useNavigate, useParams, useSearchParams, createSearchParams } from 'react-router-dom'
+import { Breadcrumbs, Product, SearchItem, InputSelect, Pagination } from '../../components'
+import { useSelector } from 'react-redux'
+import Masonry from 'react-masonry-css'
+import { sorts } from '../../ultils/constants'
+
+const breakpointColumnsObj = {
+  default: 4,
+  1100: 3,
+  700: 2,
+  500: 1
+};
 
 const Products = () => {
+  const { category } = useParams()
+  const { categories } = useSelector(state => state.app)
   const [products, setProducts] = useState(null)
-  const fecthProducts = async () => {
-    const response = await apiGetProducts()
+  const [activeClick, setActiveClick] = useState(null)
+  const [params] = useSearchParams()
+  const [sort, setSort] = useState('')
+  const navigate = useNavigate()
+
+  const fecthProductsByCategory = async (queries) => {
+    const response = await apiGetProducts(queries)
     if (response?.success) {
-      setProducts(response.productDatas)
+      setProducts(response)
     }
   }
   useEffect(() => {
-    fecthProducts()
-  }, [])
+    let param = []
+    for(let i of params.entries()) param.push(i)
+    const queries = {}
+    for(let i of params) queries[i[0]] = i[1]
+    let priceQuery = {}
+    if(queries.from && queries.to) {
+        priceQuery = {$and : [
+        {price: {gte: queries.from}},
+        {price: {lte: queries.to}}
+      ]}
+      delete queries.price
+    }
+    if(queries.from) queries.price = {gte: queries.from}
+    if(queries.to) queries.price = {lte: queries.to}
+    delete queries.from
+    delete queries.to
+    fecthProductsByCategory({...priceQuery, ...queries})
+    window.scrollTo(0,0)
+  }, [params])
+
+  const changeActiveFilter = useCallback((name) => {
+    if(activeClick === name) setActiveClick(null)
+    else setActiveClick(name)
+  }, [activeClick])
+
+  const changeValue = useCallback((value) => {
+    setSort(value)
+  }, [sort])
+
+  useEffect(() => {
+    if(sort === ''){
+      navigate(`/${category}`)
+    } else {
+      navigate({
+        pathname: `/${category}`,
+        search: createSearchParams({sort}).toString()
+      })
+    }
+  },[sort])
   return (
     <div className='w-full'>
       <div className='h-[81px] flex justify-center items-center bg-gray-100'>
         <div className='w-main'>
           <h3 className='font-semibold'>SẢN PHẨM</h3>
+          <Breadcrumbs category={categories?.find((el => creatSlug(el.title) === category))?.title} />
         </div>
       </div>
-      <div className='flex gap-2'>
-        {products?.map(el => (
-          <Link
-          className='w-1/3  flex-auto px-[10px] mb-[20px]'
-          to={`/${el._id}/${el.title}`}
-          >
-            <div key={el._id} className='w-full flex flex-col items-center pt-8 gap-2'>
-            <img
-              src={el?.thumb[0] || 'https://th.bing.com/th/id/OIP.ZWOHnGJ4OUzFZnsKMgdCtgHaHa?rs=1&pid=ImgDetMain'}
-              alt=''
-              className='w-full object-contain'
+      <div className='w-main border p-4 flex justify-between mt-8'>
+        <div className='w-4/5 flex-auto flex flex-col gap-3'>
+          <span className='font-semibold text-sm'>Filter by</span>
+          <div className='flex items-center gap-4'>
+            <SearchItem
+              name='Giá'
+              activeClick={activeClick}
+              changeActiveFilter={changeActiveFilter}
+              type='input'
             />
-            <span className='line-clamp-1 text-center'>{el?.title}</span>
-            <span className='text-main text-[20px]'>{`${formatMoney(el?.price)} VNĐ`}</span>
-            <span className='text-sm'>{`Đã bán ${formatSold(el?.sold)}`}</span>
+            <SearchItem
+              name='Loại sản phẩm'
+              activeClick={activeClick}
+              changeActiveFilter={changeActiveFilter}
+            />
+            <SearchItem
+              name='Thương hiệu'
+              activeClick={activeClick}
+              changeActiveFilter={changeActiveFilter}
+              type='checkboxbrand'
+            />
           </div>
-          </Link>
-        ))}
+        </div>
+        <div className='w-1/5 flex flex-col gap-3'>
+          <span className='font-semibold text-sm'>Sort by</span>
+          <div className='w-full text-sm'>
+            <InputSelect value={sort} changeValue={changeValue} options={sorts} />
+          </div>
+        </div>
+      </div>
+      <div className='mt-8 w-main'>
+        <Masonry
+          breakpointCols={breakpointColumnsObj}
+          className="my-masonry-grid mx-[-10px]"
+          columnClassName="my-masonry-grid_column">
+          {products?.productDatas?.map(el => (
+            <Product
+              key={el._id}
+              productDatas={el}
+              pid={el._id}
+              normal={true}
+            />
+          ))}
+        </Masonry>
+      </div>
+      <div className='border w-main m-auto my-4 flex justify-center'>
+          <Pagination totalCount={products?.counts} />
       </div>
       <div className='h-[500px] w-full'></div>
     </div>

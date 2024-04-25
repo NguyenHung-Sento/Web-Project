@@ -1,11 +1,11 @@
 import React, { useEffect, useState, memo } from 'react'
-import deallogo from '../assets/deallogo.png'
-import { apiGetProducts } from '../apis/product'
-import { formatMoney, formatSold } from '../ultils/helper'
-import icons from '../ultils/icons'
-import Countdown from './Countdown'
+import deallogo from '../../assets/deallogo.png'
+import { apiGetProducts } from '../../apis/product'
+import { formatMoney, formatSold } from '../../ultils/helper'
+import icons from '../../ultils/icons'
+import Countdown from '../common/Countdown'
 import { Link } from 'react-router-dom'
-import path from '../ultils/path'
+import path from '../../ultils/path'
 
 const { IoMenu } = icons
 let idInterval

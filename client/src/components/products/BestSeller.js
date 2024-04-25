@@ -1,24 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { apiGetProducts } from '../apis'
-import Product from './Product'
-import Slider from 'react-slick'
-import banner1 from '../assets/banner1.jpg'
-import banner2 from '../assets/banner2.jpg'
-import banner3 from '../assets/banner3.jpg'
-import event from '../assets/event.png'
+import React, { useState, useEffect, memo } from 'react'
+import { apiGetProducts } from '../../apis'
+import CustomSlider from '../common/CustomSlider'
+import banner1 from '../../assets/banner1.jpg'
+import banner2 from '../../assets/banner2.jpg'
+import banner3 from '../../assets/banner3.jpg'
+import event from '../../assets/event.png'
 
 const tabs = [
     { id: 1, name: 'bán chạy' },
     { id: 2, name: 'sản phẩm mới' },
 ]
-
-const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1
-};
 
 
 const BestSeller = () => {
@@ -49,21 +40,13 @@ const BestSeller = () => {
                 {tabs.map(el => (
                     <span
                         key={el.id}
-                        className={`font-semibold capitalize px-8 cursor-pointer text-gray-400 ${activedTab === el.id ? 'text-blue-700 underline underline-offset-8' : ''}`}
+                        className={`font-semibold capitalize px-8 cursor-pointer text-gray-400 ${activedTab === el.id ? 'text-cyan-700 underline underline-offset-8' : ''}`}
                         onClick={() => setActivedTab(el.id)}
                     >{el.name}</span>
                 ))}
             </div>
             <div className='mt-4 border-t-2 border-main py-4 bg-gradient-to-b from-cyan-300 to-blue-400'>
-                <Slider className='custum-slider' {...settings}>
-                    {products?.map(el => (
-                        <Product
-                            key={el._id}
-                            productDatas={el}
-                            isNew={activedTab === 1 ? false : true}
-                        />
-                    ))}
-                </Slider>
+                <CustomSlider products={products} activedTab={activedTab} />
             </div>
             <div className='flex flex-col mt-8 pt-2 gap-2 border-t-2 border-grey-400'>
                 <div>
@@ -79,4 +62,4 @@ const BestSeller = () => {
     )
 }
 
-export default BestSeller
+export default memo(BestSeller)

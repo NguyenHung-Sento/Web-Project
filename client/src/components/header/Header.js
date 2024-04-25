@@ -1,11 +1,13 @@
-import React from 'react'
-import logo from '../assets/logo.png'
-import icons from '../ultils/icons'
+import React, { Fragment ,memo} from 'react'
+import logo from '../../assets/logo.png'
+import icons from '../../ultils/icons'
 import { Link } from 'react-router-dom'
-import path from '../ultils/path'
+import path from '../../ultils/path'
+import { useSelector } from 'react-redux'
 
 const { FaPhone, MdEmail, BsCart4, FaCircleUser } = icons
 const Header = () => {
+  const { current } = useSelector(state => state.user)
   return (
     <div className='w-main flex justify-between h-[140px] py-[35px]'>
       <Link to={`/${path.HOME}`}>
@@ -26,16 +28,20 @@ const Header = () => {
           </span>
           <span>Hỗ trợ trực tuyến 24/7</span>
         </div>
-        <div className='flex items-center px-6 border-r justify-center gap-2 cursor-pointer'>
-          <BsCart4 color='#156082' size={24} />
-          <span>0 items</span>
-        </div>
-        <div className='flex items-center px-6 justify-center cursor-pointer'>
-          <FaCircleUser color='#156082' size={24} />
-        </div>
+        {current && <Fragment>
+          <div className='flex items-center px-6 border-r justify-center gap-2 cursor-pointer'>
+            <BsCart4 color='#156082' size={24} />
+            <span>0 items</span>
+          </div>
+          <Link
+            to={current?.role === 'admin' ? `/${path.ADMIN}/${path.DASHBOARD}` : `/${path.MEMBER}/${path.PERSONAL}`}
+            className='flex items-center px-6 justify-center cursor-pointer'
+          >
+            <FaCircleUser color='#156082' size={24} />
+          </Link></Fragment>}
       </div>
     </div>
   )
 }
 
-export default Header
+export default memo(Header)

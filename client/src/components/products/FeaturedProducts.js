@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react'
-import {ProductCard} from './'
-import {apiGetProducts} from '../apis'
+import React, {useState, useEffect, memo} from 'react'
+import {ProductCard} from '..'
+import {apiGetProducts} from '../../apis'
 
 const FeaturedProducts = () => {
 
@@ -20,7 +20,7 @@ const FeaturedProducts = () => {
       <div className='flex flex-wrap mt-[15px] mx-[-10px]'>
         {products?.map(el => (
           <ProductCard 
-          key={el.id} 
+          key={el._id} 
           image={el.thumb[0]}
           title={el.title}
           price={el.price}
@@ -32,4 +32,4 @@ const FeaturedProducts = () => {
   )
 }
 
-export default FeaturedProducts
+export default memo(FeaturedProducts)

@@ -1,10 +1,9 @@
 import axios from '../axios';
 
-export const apiGetProducts = (params, query) => axios({
+export const apiGetProducts = (params) => axios({
     url: '/product',
     method: 'get',
     params,
-    query
 })
 
 export const apiGetProduct = (pid) => axios({

@@ -17,6 +17,8 @@ export const userSlice = createSlice({
         logout: (state, action) => {
             state.isLogedIn = false
             state.token = null
+            state.current = null
+            state.isLoading = false
         },
     },
     extraReducers: (builder) => {

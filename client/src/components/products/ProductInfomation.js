@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react'
-import { productInfoTabs } from '../ultils/constants'
+import { productInfoTabs } from '../../ultils/constants'
 
 const activedStyles = ''
 const notActivedStyles = ''

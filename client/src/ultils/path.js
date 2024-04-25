@@ -3,10 +3,23 @@ const path = {
     HOME: '',
     ALL: '*',
     LOGIN: 'login',
-    PRODUCTS: 'products',
+    PRODUCTS: ':category',
     ABOUT: 'about',
-    DETAIL_PRODUCT__PID__TITLE: 'san-pham/:pid/:title',
-    DETAIL_PRODUCT: 'san-pham'
+    DETAIL_PRODUCT__CATEGORY__PID__TITLE: ':category/:pid/:title',
+
+
+    //admin
+    ADMIN: 'admin',
+    DASHBOARD: 'dashboard',
+    MANAGE_USERS: 'manage-users',
+    MANAGE_PRODUCTS: 'manage-products',
+    MANAGE_ORDERS: 'manage-orders',
+    CREATE_PRODUCT: 'create-product',
+
+    //member
+    MEMBER:'member',
+    PERSONAL: 'personal',
+
 }
 
 export default path

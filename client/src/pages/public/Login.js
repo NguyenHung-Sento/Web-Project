@@ -30,9 +30,7 @@ const Login = () => {
     })
   }
 
-  // useEffect(() => {
-  //   resetPayload()
-  // }, [isRegister])
+
   const handleSubmit = useCallback(async () => {
     const { firstname, lastname, mobile, ...data } = payload
     if (isRegister) {

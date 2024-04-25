@@ -1,7 +1,7 @@
-import React from 'react'
-import {navigation} from '../ultils/constants'
+import React, {memo} from 'react'
+import {navigation} from '../../ultils/constants'
 import { NavLink } from 'react-router-dom'
-import icons from '../ultils/icons'
+import icons from '../../ultils/icons'
 
 const {FaHome} = icons
 const Navigation = () => {
@@ -21,4 +21,4 @@ const Navigation = () => {
   )
 }
 
-export default Navigation
+export default memo(Navigation)

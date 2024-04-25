@@ -1,5 +1,5 @@
-import React from 'react'
-import ads1 from '../assets/ads1.png'
+import React, {memo} from 'react'
+import ads1 from '../../assets/ads1.png'
 
 const Banner = () => {
   return (
@@ -13,4 +13,4 @@ const Banner = () => {
   )
 }
 
-export default Banner
+export default memo(Banner)
