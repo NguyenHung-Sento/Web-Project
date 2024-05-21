@@ -6,6 +6,7 @@ const path = {
     PRODUCTS: ':category',
     ABOUT: 'about',
     DETAIL_PRODUCT__CATEGORY__PID__TITLE: ':category/:pid/:title',
+    RESET_PASSWORD: 'reset-password/:token',
 
 
     //admin

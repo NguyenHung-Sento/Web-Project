@@ -29,11 +29,13 @@ const Products = () => {
       setProducts(response)
     }
   }
+
+  let param = []
+  for(let i of params.entries()) param.push(i)
+  const queries = {}
+  for(let i of param) queries[i[0]] = i[1]
+
   useEffect(() => {
-    let param = []
-    for(let i of params.entries()) param.push(i)
-    const queries = {}
-    for(let i of params) queries[i[0]] = i[1]
     let priceQuery = {}
     if(queries.from && queries.to) {
         priceQuery = {$and : [
@@ -59,14 +61,19 @@ const Products = () => {
     setSort(value)
   }, [sort])
 
+  const navigateSearch = () => {
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams(queries).toString()
+    })
+  }
   useEffect(() => {
     if(sort === ''){
-      navigate(`/${category}`)
+      delete queries.sort
+      navigateSearch()
     } else {
-      navigate({
-        pathname: `/${category}`,
-        search: createSearchParams({sort}).toString()
-      })
+      queries.sort = sort 
+      navigateSearch()
     }
   },[sort])
   return (
@@ -122,7 +129,7 @@ const Products = () => {
           ))}
         </Masonry>
       </div>
-      <div className='border w-main m-auto my-4 flex justify-center'>
+      <div className='w-main m-auto my-4 flex justify-center'>
           <Pagination totalCount={products?.counts} />
       </div>
       <div className='h-[500px] w-full'></div>

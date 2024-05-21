@@ -12,6 +12,7 @@ import { TbBrandProducthunt } from "react-icons/tb";
 import { FaUsersRectangle } from "react-icons/fa6";
 import { RiBillLine } from "react-icons/ri";
 import { IoSearchCircleOutline } from "react-icons/io5";
+import { IoClose } from "react-icons/io5";
 
 const icons = {
     FaPhone,
@@ -27,7 +28,8 @@ const icons = {
     FaUsersRectangle,
     RiBillLine,
     AiOutlineDown,
-    IoSearchCircleOutline
+    IoSearchCircleOutline,
+    IoClose
 }
 
 export default icons

@@ -96,22 +96,24 @@ const logout = asyncHandler(async(req, res) => {
 })
 
 const forgotPassword = asyncHandler(async(req, res) => {
-    const {email} = req.query
+    const {email} = req.body
     if(!email) throw new Error('Missing email')
     const user = await User.findOne({email})
     if(!user) throw new Error('User not found')
     const resetToken = user.createPasswordChangeToken()
     await user.save()
 
-    const html = `Xin Vui lòng click vào link dưới đây để thay đổi mật khẩu. Link sẽ hết hạn sau 15 phút. <a href=${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here</a>`
+    const html = `Xin Vui lòng click vào link dưới đây để thay đổi mật khẩu. Link sẽ hết hạn sau 15 phút. <a href=${process.env.CLIENT_URL}/reset-password/${resetToken}>Click here</a>`
 
     const data = {
         email,
-        html
+        html,
+        subject:'Forgot password'
     }
     const rs = await sendMail(data)
     return res.status(200).json({
-        success: true,
+        success:  rs.response?.includes('OK') ? true: false,
+        mes: rs.response?.includes('OK') ? 'Please check your email!': 'Something went wrong, please try again!',
         rs
     })
 })
@@ -133,11 +135,56 @@ const resetPassword = asyncHandler(async(req, res) => {
     })
 })
 
-const getUser = asyncHandler(async(req, res) => {
-    const response = await User.find().select('-refreshToken -password -role')
-    return res.status(200).json({
-        success: response ? true:false,
-        users: response
+const getUsers = asyncHandler(async(req, res) => {
+    const queries = {...req.query}
+
+    const excludeFields = ['limit', 'sort', 'page', 'fields']
+    excludeFields.forEach(el => delete queries[el])
+
+    let queryString = JSON.stringify(queries)
+    queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, matchedEl => `$${matchedEl}`)
+    const formatedQueries = JSON.parse(queryString)
+
+    
+    if(queries?.firstname) formatedQueries.firstname = {$regex: queries.firstname, $options: 'i'}
+    
+    if(req.query.q){
+        delete formatedQueries.q
+        formatedQueries['$or'] = [
+            {firstname : {$regex: queries.q, $options: 'i'}},
+            {lastname : {$regex: queries.q, $options: 'i'}},
+            {email : {$regex: queries.q, $options: 'i'}}
+        ]
+    }
+
+    let queryCommand = User.find(formatedQueries)
+
+    
+    if(req.query.sort){
+        const sortBy = req.query.sort.split(',').join(' ')
+        queryCommand = queryCommand.sort(sortBy)
+    }
+
+    
+    if(req.query.fields){
+        const fields =req.query.fields.split(',').join(' ')
+        queryCommand = queryCommand.select(fields)
+    }
+
+    
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCTS
+    const skip = (page-1) * limit
+    queryCommand.skip(skip).limit(limit)
+
+    queryCommand.exec(async(err, response) => {
+        if(err) throw new Error(err.message)
+        const counts = await User.find(formatedQueries).countDocuments()
+        return res.status(200).json({
+            success : response ? true : false,
+            counts,
+            users : response ? response : 'Cannot get users',
+        })
     })
 })
 
@@ -210,7 +257,7 @@ module.exports = {
     forgotPassword,
     resetPassword,
     logout,
-    getUser,
+    getUsers,
     deleteUser,
     updateUser,
     updateUserByAdmin,

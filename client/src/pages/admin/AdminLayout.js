@@ -5,8 +5,8 @@ import { useSelector } from 'react-redux'
 import { AdminSidebar } from '../../components'
 
 const AdminLayout = () => {
-  const {isLogedIn, current} = useSelector(state => state.user)
-  if(!isLogedIn || !current || current.role !== 'admin') return <Navigate to={`/${path.LOGIN}`} replace={true} />
+  const {isLoggedIn, current} = useSelector(state => state.user)
+  if(!isLoggedIn || !current || current.role !== 'admin') return <Navigate to={`/${path.LOGIN}`} replace={true} />
   return (
     <div className='flex w-full bg-gray-300 min-h-screen relative'>
       <div className='w-[327px] top-0 bottom-0 flex-none fixed'>

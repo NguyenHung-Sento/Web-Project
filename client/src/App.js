@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Login, Home, Public, Products, About, DetailProduct } from './pages/public';
+import { Login, Home, Public, Products, About, DetailProduct, ResetPassword } from './pages/public';
 import { ManageOrders, ManageUsers, ManageProducts, AdminLayout, CreateProducts, Dashboard } from './pages/admin';
 import { MemberLayout, Personal } from './pages/member';
 import path from './ultils/path';
 import { getCategories } from './store/app/asyncActions';
 import { useDispatch } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const dispacth = useDispatch()
@@ -20,6 +22,7 @@ function App() {
           <Route path={path.ABOUT} element={<About />} />
           <Route path={path.PRODUCTS} element={<Products />} />
           <Route path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE} element={<DetailProduct />} />
+          <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
           <Route path={path.ALL} element={<Home />} />
         </Route>
         <Route path={path.ADMIN} element={<AdminLayout />}>
@@ -34,6 +37,19 @@ function App() {
         </Route>
         <Route path={path.LOGIN} element={<Login />} />
       </Routes>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
+      <ToastContainer />
     </div>
   );
 }

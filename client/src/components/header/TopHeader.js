@@ -10,17 +10,23 @@ const { CiLogout } = icons
 
 const TopHeader = () => {
   const dispatch = useDispatch()
-  const { isLogedIn, current } = useSelector(state => state.user)
+  const { isLoggedIn, current } = useSelector(state => state.user)
 
   useEffect(() => {
-    if (isLogedIn) dispatch(getCurrent())
-  }, [dispatch, isLogedIn])
+   const setTimeOutId = setTimeout(() => {
+    if (isLoggedIn) dispatch(getCurrent())
+   }, 300)
+  
+   return () => {
+    clearTimeout(setTimeOutId)
+   }
+  }, [dispatch, isLoggedIn])
 
   return (
     <div className='h-[38px] w-full bg-cyan-600 flex items-center justify-center'>
       <div className='w-main flex items-center justify-between text-white'>
         <span>Tư vấn ngay: (1800) 6821</span>
-        {isLogedIn
+        {isLoggedIn && current
           ? <div className='flex gap-2 items-center'>
             <span>{`Xin chào, ${current?.lastname}!`}</span>
             <span

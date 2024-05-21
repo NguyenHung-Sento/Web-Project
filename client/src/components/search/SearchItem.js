@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from 'react'
 import icons from '../../ultils/icons'
 import { useSelector } from 'react-redux'
-import { useParams, createSearchParams, useNavigate } from 'react-router-dom'
+import { useParams, createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { creatSlug } from '../../ultils/helper'
 import { apiGetProducts } from '../../apis'
 
@@ -10,6 +10,7 @@ const { AiOutlineDown, IoSearchCircleOutline } = icons
 
 const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }) => {
   const navigate = useNavigate()
+  const [params] = useSearchParams()
   const { category } = useParams()
   const { categories } = useSelector(state => state.app)
   const [selected, setSelected] = useState([])
@@ -42,29 +43,36 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
     const response = await apiGetProducts({sort : '-price', limit: 1})
     if(response.success) setHighestPrice(response.productDatas[0]?.price)
   }
+
+  let param = []
+  for(let i of params.entries()) param.push(i)
+  const queries = {}
+  for(let i of param) queries[i[0]] = i[1]
+
+  const navigateSearch = () => {
+    navigate({
+      pathname: `/${category}`,
+      search: createSearchParams(queries).toString()
+    })
+  }
+
   useEffect(() => {
     if (selected.length > 0) {
-      navigate({
-        pathname: `/${category}`,
-        search: createSearchParams({
-          productType: selected.join(',')
-        }).toString()
-      })
+      queries.productType = selected.join(',')
+      navigateSearch()
     } else {
-      navigate(`/${category}`)
+      delete queries.productType
+      navigateSearch()
     }
   }, [selected])
 
   useEffect(() => {
     if (brands.length > 0) {
-      navigate({
-        pathname: `/${category}`,
-        search: createSearchParams({
-          brand: brands.join(',')
-        }).toString()
-      })
+      queries.brand = brands.join(',')
+      navigateSearch()
     } else {
-      navigate(`/${category}`)
+      delete queries.brand
+      navigateSearch()
     }
   }, [brands])
 

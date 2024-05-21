@@ -1,5 +1,5 @@
 import React, {memo} from 'react'
-import ads1 from '../../assets/ads1.png'
+import ads1 from '../../assets/slide1.png'
 
 const Banner = () => {
   return (

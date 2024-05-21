@@ -48,7 +48,14 @@ const getProducts = asyncHandler(async(req, res) =>{
         const productTypeQuery = productTypeArr.map(el => ({productType: {$regex: el, $options: 'i'}}))
         productTypeQueryObject = {$or: productTypeQuery}
     }
-    const q = {...productTypeQueryObject, ...formatedQueries}
+    let brandQueryObject = {}
+    if(queries?.brand){
+        delete formatedQueries.brand
+        const brandArr = queries.brand?.split(',')
+        const brandQuery = brandArr.map(el => ({brand: {$regex: el, $options: 'i'}}))
+        brandQueryObject = {$or: brandQuery}
+    }
+    const q = {...productTypeQueryObject, ...formatedQueries, ...brandQueryObject}
     let queryCommand = Product.find(q)
 
     //Sắp xếp

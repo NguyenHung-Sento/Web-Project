@@ -4,18 +4,18 @@ import * as actions from './asyncActions'
 export const userSlice = createSlice({
     name: 'user',
     initialState: {
-        isLogedIn: false,
+        isLoggedIn: false,
         current: null,
         token: null,
         isLoading: false
     },
     reducers: {
         login: (state, action) => {
-            state.isLogedIn = action.payload.isLogedIn
+            state.isLoggedIn = action.payload.isLoggedIn
             state.token = action.payload.token
         },
         logout: (state, action) => {
-            state.isLogedIn = false
+            state.isLoggedIn = false
             state.token = null
             state.current = null
             state.isLoading = false
@@ -27,11 +27,14 @@ export const userSlice = createSlice({
         });
         builder.addCase(actions.getCurrent.fulfilled, (state,action) => {
             state.isLoading = false;
+            state.isLoggedIn = true;
             state.current = action.payload;
         });
         builder.addCase(actions.getCurrent.rejected, (state,action) => {
             state.isLoading = false;
             state.current = null;
+            state.isLoggedIn = false;
+            state.token = null;
         });
 
     }

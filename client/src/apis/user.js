@@ -12,8 +12,25 @@ export const apiLogin = (data) => axios({
     data
 })
 
+export const apiForgotPassword = (data) => axios({
+    url: '/user/forgotpassword',
+    method: 'post',
+    data
+})
+
+export const apiResetPassword = (data) => axios({
+    url: '/user/resetpassword',
+    method: 'put',
+    data
+})
+
 export const apiGetCurrent = () => axios({
     url: '/user/current',
     method: 'get',
 })
 
+export const apiGetUsers = (params) => axios({
+    url: '/user/',
+    method: 'get',
+    params
+})
