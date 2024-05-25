@@ -4,7 +4,8 @@ import { Login, Home, Public, Products, About, DetailProduct, ResetPassword } fr
 import { ManageOrders, ManageUsers, ManageProducts, AdminLayout, CreateProducts, Dashboard } from './pages/admin';
 import { MemberLayout, Personal } from './pages/member';
 import path from './ultils/path';
-import { getCategories } from './store/app/asyncActions';
+import { getCategories} from './store/app/asyncActions';
+import { getBrands } from './store/brand/asyncActions';
 import { useDispatch } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -13,6 +14,7 @@ function App() {
   const dispacth = useDispatch()
   useEffect(() => {
     dispacth(getCategories())
+    dispacth(getBrands())
   }, [])
   return (
     <div className="min-h-screen font-main">

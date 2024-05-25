@@ -1,4 +1,4 @@
-import React, { Fragment ,memo} from 'react'
+import React, { Fragment, memo } from 'react'
 import logo from '../../assets/logo.png'
 import icons from '../../ultils/icons'
 import { Link } from 'react-router-dom'
@@ -28,17 +28,26 @@ const Header = () => {
           </span>
           <span>Hỗ trợ trực tuyến 24/7</span>
         </div>
-        {current && <Fragment>
-          <div className='flex items-center px-6 border-r justify-center gap-2 cursor-pointer'>
-            <BsCart4 color='#156082' size={24} />
-            <span>0 items</span>
-          </div>
-          <Link
-            to={current?.role === 'admin' ? `/${path.ADMIN}/${path.DASHBOARD}` : `/${path.MEMBER}/${path.PERSONAL}`}
-            className='flex items-center px-6 justify-center cursor-pointer'
-          >
-            <FaCircleUser color='#156082' size={24} />
-          </Link></Fragment>}
+        {current && (
+          <Fragment>
+            <div className='flex items-center px-6 border-r justify-center gap-2 cursor-pointer relative group'>
+              <BsCart4 color='#156082' size={24} />
+              <span>0 items</span>
+              <div className='absolute bg-black bg-opacity-75 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition duration-300 rounded-md -top-10 left-1/2 transform -translate-x-1/2'>
+                Giỏ hàng
+              </div>
+            </div>
+            <Link
+              to={current?.role === 'admin' ? `/${path.ADMIN}/${path.DASHBOARD}` : `/${path.MEMBER}/${path.PERSONAL}`}
+              className='flex items-center px-6 justify-center cursor-pointer relative group'
+            >
+              <FaCircleUser color='#156082' size={24} />
+              <div className='absolute bg-black bg-opacity-75 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition duration-300 rounded-md -top-10 left-1/2 transform -translate-x-1/2'>
+                Trang quản trị
+              </div>
+            </Link>
+          </Fragment>
+        )}
       </div>
     </div>
   )

@@ -8,6 +8,7 @@ import path from '../../ultils/path'
 import { login } from '../../store/user/userSlice'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
+import { validate } from '../../ultils/helper'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -15,56 +16,81 @@ const Login = () => {
   const [payload, setPayload] = useState({
     email: '',
     password: '',
+    confirmPassword: '',
     firstname: '',
     lastname: '',
     mobile: ''
   })
 
+  const [invalidFields, setInvalidFields] = useState([])
   const [isForgorPassword, setIsForgorPassword] = useState(false)
   const [isRegister, setIsRegister] = useState(false)
+  const [email, setEmail] = useState('')
   const resetPayload = () => {
     setPayload({
       email: '',
       password: '',
+      confirmPassword: '',
       firstname: '',
       lastname: '',
       mobile: ''
     })
   }
 
-  const [email, setEmail] = useState('')
   const handleForgotPassword = async () => {
-    const response = await apiForgotPassword({email})
-    if(response.success){
+    const response = await apiForgotPassword({ email })
+    if (response.success) {
       toast.success(response.mes)
-    }else{
+    } else {
       toast.error(response.mes)
     }
   }
 
   const handleSubmit = useCallback(async () => {
-    const { firstname, lastname, mobile, ...data } = payload
-    if (isRegister) {
-      const response = await apiRegister(payload)
-      if (response.success) {
-        Swal.fire('Congratulations', response.mes, 'success').then(() => {
-          setIsRegister(false)
-          resetPayload()
-        })
+    const { firstname, lastname, mobile, confirmPassword, ...data } = payload
+    const invalids = isRegister ? validate(payload, setInvalidFields) : validate(data, setInvalidFields)
+
+    if (invalids === 0) {
+      if (isRegister) {
+        const response = await apiRegister(payload)
+        if (response.success) {
+          Swal.fire('Congratulations', response.mes, 'success').then(() => {
+            setIsRegister(false)
+            resetPayload()
+          })
+        } else {
+          Swal.fire('Oops~', response.mes, 'error')
+        }
       } else {
-        Swal.fire('Oops~', response.mes, 'error')
-      }
-    } else {
-      const rs = await apiLogin(data)
-      if (rs.success) {
-        dispatch(login({ isLoggedIn: true, token: rs.accessToken, userData: rs.userData }))
-        navigate(`/${path.HOME}`)
-      } else {
-        Swal.fire('Oops~', rs.mes, 'error')
+        const rs = await apiLogin(data)
+        if (rs.success) {
+          dispatch(login({ isLoggedIn: true, token: rs.accessToken, userData: rs.userData }))
+          navigate(`/${path.HOME}`)
+        } else {
+          Swal.fire('Oops~', rs.mes, 'error')
+        }
       }
     }
 
   }, [payload, isRegister])
+
+  useEffect(() => {
+    resetPayload()
+    setInvalidFields([])
+  }, [isRegister])
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        handleSubmit()
+      }
+    }
+  
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [handleSubmit])
   return (
     <div className='w-screen h-screen relative'>
       {isForgorPassword && <div className='w-full h-full animate-slide-right absolute top-0 lep-0 bottom-0 right-0 z-50 bg-white flex flex-col items-center  py-8'>
@@ -87,7 +113,7 @@ const Login = () => {
             <Button
               children={'Back'}
               handleOnClick={() => setIsForgorPassword(false)}
-              style={'px-4 py-2 my-2 rounded-md text-white bg-red-600 text-semibold'}
+              style={'bg-red-600 hover:bg-red-700'}
             >
             </Button>
           </div>
@@ -107,12 +133,16 @@ const Login = () => {
               setValue={setPayload}
               nameKey='firstname'
               fullWidth
+              invalidFields={invalidFields}
+              setInvalidFields={setInvalidFields}
             />
             <InputField
               value={payload.lastname}
               setValue={setPayload}
               nameKey='lastname'
               fullWidth
+              invalidFields={invalidFields}
+              setInvalidFields={setInvalidFields}
             />
           </div>}
           <InputField
@@ -120,12 +150,16 @@ const Login = () => {
             setValue={setPayload}
             nameKey='email'
             fullWidth
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
           />
           {isRegister && <InputField
             value={payload.mobile}
             setValue={setPayload}
             nameKey='mobile'
             fullWidth
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
           />}
           <InputField
             value={payload.password}
@@ -133,14 +167,26 @@ const Login = () => {
             nameKey='password'
             type='password'
             fullWidth
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
           />
+          {isRegister && <InputField
+            value={payload.confirmPassword}
+            setValue={setPayload}
+            nameKey='confirmPassword'
+            type='password'
+            fullWidth
+            invalidFields={invalidFields}
+            setInvalidFields={setInvalidFields}
+            placeholder='Confirm Password' 
+          />}
           <Button
             children={isRegister ? 'Register' : 'Login'}
             handleOnClick={handleSubmit}
             fw
           />
           <div className='flex items-center justify-between my-2 w-full text-sm'>
-            {!isRegister && <span onClick={() => {setIsForgorPassword(true)}} className='text-gray-500 hover:underline cursor-pointer'>Quên mật khẩu?</span>}
+            {!isRegister && <span onClick={() => { setIsForgorPassword(true) }} className='text-gray-500 hover:underline cursor-pointer'>Quên mật khẩu?</span>}
             {!isRegister && <span
               className='text-gray-500 hover:underline cursor-pointer'
               onClick={() => setIsRegister(true)}

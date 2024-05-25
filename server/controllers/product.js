@@ -5,10 +5,14 @@ const { Query } = require('mongoose')
 const slugify = require('slugify')
 
 const createProduct = asyncHandler(async(req, res) =>{
-    if (Object.keys(req.body).length === 0) 
-        throw new Error('Missing inputs!')
-    if (req.body && req.body.title) 
-        req.body.slug = slugify(req.body.title)
+    const {title, price, description, brand, category, productType} = req.body
+    const thumb = req.files?.thumb[0]?.path
+    const images = req.files?.images?.map(el => el.path)
+    if (!(title && price && description && brand && category && productType)) 
+        throw new Error('Missing inputs')
+    req.body.slug = slugify(title)
+    if(thumb) req.body.thumb = thumb
+    if(images) req.body.images = images
     const newProduct = await Product.create(req.body)
     return res.status(200).json({
         success : newProduct ? true : false,
@@ -54,6 +58,16 @@ const getProducts = asyncHandler(async(req, res) =>{
         const brandArr = queries.brand?.split(',')
         const brandQuery = brandArr.map(el => ({brand: {$regex: el, $options: 'i'}}))
         brandQueryObject = {$or: brandQuery}
+    }
+
+    if(queries?.search){
+        delete formatedQueries.search
+        formatedQueries['$or'] = [
+            {title : {$regex: queries.search, $options: 'i'}},
+            {category : {$regex: queries.search, $options: 'i'}},
+            {productType : {$regex: queries.search, $options: 'i'}},
+            {brand : {$regex: queries.search, $options: 'i'}},
+        ]
     }
     const q = {...productTypeQueryObject, ...formatedQueries, ...brandQueryObject}
     let queryCommand = Product.find(q)
@@ -120,15 +134,6 @@ const uploadImagesProduct = asyncHandler(async(req, res) => {
     })
 })
 
-const uploadThumbProduct = asyncHandler(async(req, res) => {
-    const {pid} = req.params
-    if(!req.files) throw new Error('Missing input')
-    const response = await Product.findByIdAndUpdate(pid, {$push:{thumb: {$each: req.files.map(el => el.path)}}}, {new:true})
-    return res.status(200).json({
-        status: response ? true:false,
-        updatedProduct: response ? response:'Cannot update thumb'
-    })
-})
 
 module.exports={
     createProduct,
@@ -137,5 +142,4 @@ module.exports={
     updateProduct,
     deleteProduct,
     uploadImagesProduct,
-    uploadThumbProduct,
 }

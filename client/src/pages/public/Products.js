@@ -2,10 +2,12 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { apiGetProducts } from '../../apis'
 import { creatSlug } from '../../ultils/helper'
 import { useNavigate, useParams, useSearchParams, createSearchParams } from 'react-router-dom'
-import { Breadcrumbs, Product, SearchItem, InputSelect, Pagination } from '../../components'
+import { Breadcrumbs, Product, SearchItem, InputSelect, Pagination, InputField } from '../../components'
 import { useSelector } from 'react-redux'
 import Masonry from 'react-masonry-css'
 import { sorts } from '../../ultils/constants'
+import useDebounce from '../../hooks/useDebounce'
+import { IoClose } from 'react-icons/io5'
 
 const breakpointColumnsObj = {
   default: 4,
@@ -22,6 +24,16 @@ const Products = () => {
   const [params] = useSearchParams()
   const [sort, setSort] = useState('')
   const navigate = useNavigate()
+  const [search, setSearch] = useState({
+    search: '',
+
+  })
+
+  const handleClearInput = () => {
+    setSearch(prev => ({ ...prev, search: '' }))
+  }
+
+  const queriesDebounce = useDebounce(search.search, 300)
 
   const fecthProductsByCategory = async (queries) => {
     const response = await apiGetProducts(queries)
@@ -30,11 +42,7 @@ const Products = () => {
     }
   }
 
-  let param = []
-  for(let i of params.entries()) param.push(i)
-  const queries = {}
-  for(let i of param) queries[i[0]] = i[1]
-
+  const queries = Object.fromEntries([...params])
   useEffect(() => {
     let priceQuery = {}
     if(queries.from && queries.to) {
@@ -48,9 +56,12 @@ const Products = () => {
     if(queries.to) queries.price = {lte: queries.to}
     delete queries.from
     delete queries.to
+    if (queriesDebounce){
+       queries.search = queriesDebounce
+    }
     fecthProductsByCategory({...priceQuery, ...queries})
     window.scrollTo(0,0)
-  }, [params])
+  }, [params, queriesDebounce])
 
   const changeActiveFilter = useCallback((name) => {
     if(activeClick === name) setActiveClick(null)
@@ -76,12 +87,24 @@ const Products = () => {
       navigateSearch()
     }
   },[sort])
+
   return (
     <div className='w-full'>
       <div className='h-[81px] flex justify-center items-center bg-gray-100'>
         <div className='w-main'>
           <h3 className='font-semibold'>SẢN PHẨM</h3>
           <Breadcrumbs category={categories?.find((el => creatSlug(el.title) === category))?.title} />
+        </div>
+        <div className='flex justify-end py-4 relative flex items-center'>
+          <InputField
+            nameKey={'search'}
+            value={search.search}
+            setValue={setSearch}
+            style={'w-[500px] rounded-xl'}
+            placeholder='Search product...'
+            isHideLabel
+          />
+          {search.search !== '' && <IoClose className='absolute z-10 border mr-4 cursor-pointer' onClick={handleClearInput} />}
         </div>
       </div>
       <div className='w-main border p-4 flex justify-between mt-8'>

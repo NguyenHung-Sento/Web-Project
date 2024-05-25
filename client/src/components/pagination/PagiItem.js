@@ -1,37 +1,30 @@
-import React, {memo} from 'react'
+import React, { memo } from 'react'
 import clsx from 'clsx'
-import { useSearchParams, useNavigate, useParams, createSearchParams } from 'react-router-dom'
+import { useSearchParams, useNavigate, createSearchParams, useLocation } from 'react-router-dom'
 
-const PagiItem = ({children}) => {
-  const navigate = useNavigate()
+const PagiItem = ({ children, page, handlePagination }) => {
   const [params] = useSearchParams()
-  const {category} = useParams()
 
-  const handlePagination = () => {
-    let param = []
-    for(let i of params.entries()) param.push(i)
-    const queries = {}
-    for(let i of param) queries[i[0]] = i[1]
-    if(Number(children)) queries.page = children
-    navigate({
-      pathname: `/${category}`,
-      search: createSearchParams(queries).toString()
-    })
+  const navigateToPage = () => {
+    handlePagination(page)
   }
+
   return (
-    <button 
-    className={clsx('w-10 h-10 flex justify-center', 
-      !Number(children) && 'items-end pb-2', 
-      Number(children) && 'items-center hover:rounded-full hover:bg-gray-400',
-      +params.get('page') === children && 'rounded-full bg-gray-500 text-white' ,
-      !+params.get('page') && +children === 1 && 'rounded-full bg-gray-500 text-white')}
-    onClick={handlePagination}
-    type='button'
-    disabled={!Number(children)}
+    <button
+      className={clsx(
+        'inline-flex items-center justify-center w-10 h-10 rounded-full focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition duration-300',
+        !Number(children) && 'pb-2',
+        Number(children) && 'hover:bg-gray-200',
+        +params.get('page') === children && 'bg-gray-500 text-white',
+        !+params.get('page') && +children === 1 && 'bg-gray-500 text-white'
+      )}
+      onClick={navigateToPage}
+      disabled={!Number(children)}
     >
       {children}
     </button>
   )
 }
+
 
 export default memo(PagiItem)

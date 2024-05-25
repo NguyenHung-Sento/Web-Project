@@ -22,18 +22,13 @@ export const navigation = [
 export const productInfoTabs = [
     {
         id: 1,
-        value: 'Mô tả',
+        value: 'Chi tiết',
         content: '1'
     },
     {
         id: 2,
-        value: 'Thành phần',
+        value: 'Chỉ định',
         content: '2'
-    },
-    {
-        id: 3,
-        value: 'Công dụng',
-        content: '3'
     },
 ]
 
@@ -106,3 +101,26 @@ export const adminSidebar = [
     },
 
 ]
+
+export const roles = [
+    {
+        code: 'admin',
+        value: 'admin'
+    },
+    {
+        code: 'user',
+        value: 'user'
+    }
+]
+
+export const blockStatus = [
+    {
+        code: true,
+        value: 'Blocked'
+    },
+    {
+        code: false,
+        value: 'Active'
+    }
+]
+

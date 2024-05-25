@@ -1,15 +1,19 @@
-import React, { memo } from 'react'
+import React, { memo } from 'react';
+import clsx from 'clsx';
 
-const Button = ({children, handleOnClick, style, fw}) => {
+const Button = ({ children,handleOnClick , style, fw, type = 'button' }) => {
   return (
     <button
-    type='button'
-    className={style ? style : `px-4 py-2 my-2 rounded-md text-white bg-main text-semibold ${fw ? 'w-full' : 'w-fit' }`}
-    onClick={() => {handleOnClick && handleOnClick()}}
+      type={type}
+      className={clsx('px-4 py-2 my-2 rounded-md text-white text-semibold transition duration-300 ease-in-out hover:shadow-lg',
+        style || 'bg-main hover:bg-blue-500 ',
+        fw ? 'w-full' : 'w-fit'
+      )}
+      onClick={() => {handleOnClick && handleOnClick()}}
     >
-     {children}
+      {children}
     </button>
-  )
-}
+  );
+};
 
-export default memo(Button)
+export default memo(Button);

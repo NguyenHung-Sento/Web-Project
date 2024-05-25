@@ -7,6 +7,7 @@ import {Button, SelectQuantity, ProductInfomation} from '../../components'
 import {Breadcrumbs} from '../../components'
 import { useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
+import DOMPurify from 'dompurify';
 
 const settings = {
   dots: false,
@@ -21,7 +22,8 @@ const DetailProduct = () => {
   const { pid, title } = useParams()
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
-  // const {user} = useSelector(state => state.user)
+  const [selectedImage, setSelectedImage] = useState(null)
+
   const handleOnClick = () => {
       return Swal.fire({
         title:'Thành công',
@@ -49,6 +51,11 @@ const DetailProduct = () => {
     if(flag === 'minus') setQuantity(prev => +prev-1)
     if(flag === 'plus') setQuantity(prev => +prev+1)
   },[quantity])
+
+  const handleThumbnailClick = (image) => {
+    setSelectedImage(image)
+  }
+
   return (
     <div className='w-full'>
       <div className='h-[81px] flex justify-center items-center bg-gray-100'>
@@ -59,13 +66,13 @@ const DetailProduct = () => {
       </div>
       <div className='w-main m-auto mt-4 flex'>
         <div className='flex-4 flex flex-col gap-4 w-2/5'>
-          <img src={product?.images[0]} alt='product' className='h-[458px] w-[458px] object-cover border' />
+        <img src={selectedImage ? selectedImage : product?.images[0]} alt='product' className='h-[458px] w-[458px] object-cover border' />
           <div className='w-[458px]'>
             <Slider className='images-slider flex gap-2 justify-between' {...settings}>
               {product?.images?.map(el => (
-                <div className='flex-1' key={el}>
-                  <img src={el} alt='image' className='h-[143px] w-[143px] object-cover border' />
-                </div>
+                <div className='flex-1' key={el} onClick={() => handleThumbnailClick(el)}>
+                <img src={el} alt='image' className='h-[143px] w-[143px] object-cover border cursor-pointer' />
+              </div>
               ))}
             </Slider>
           </div>
@@ -75,9 +82,10 @@ const DetailProduct = () => {
           <h3 className='font-semibold text-[30px] text-[#0072BC]'>{`${formatMoney(product?.price)} VNĐ`}</h3>
           <p className='text-sm text-neutral-900'>{`Tồn kho ${formatSold(product?.quantity)} | Đã bán ${formatSold(product?.sold)} sản phẩm`}</p>
           <ul className='list-disc pl-5'>
-            {product?.description?.map(el => (
+            {product?.description?.length > 1 && product?.description?.map(el => (
               <li className='leading-9' key={el}>{el}</li>
             ))}
+            {product?.description?.length === 1 && <div className='text-sm line-clamp-6 mb-8' dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(product?.description[0])}}></div>}
           </ul>
         </div>
         <div className='border rounded-lg w-1/5 flex flex-col gap-8 items-center'>

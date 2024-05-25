@@ -1,5 +1,5 @@
 import React from 'react'
-import { Sidebar, Banner, BestSeller, DealDaily, FeaturedProducts } from '../../components'
+import { Sidebar, Banner, BestSeller, DealDaily, FeaturedProducts, Popup } from '../../components'
 import { useSelector } from 'react-redux'
 import icons from '../../ultils/icons'
 
@@ -7,11 +7,12 @@ const {IoIosArrowForward} = icons
 
 const Home = () => {
 
-  const { isLogedIn, current } = useSelector(state => state.user)
+  const { isLoggedIn } = useSelector(state => state.user)
   const { categories } = useSelector(state => state.app)
 
   return (
     <div>
+      {!isLoggedIn && <Popup /> }
       <div className='w-main flex'>
         <div className='flex flex-col gap-5 w-[25%] flex-auto '>
           <Sidebar />

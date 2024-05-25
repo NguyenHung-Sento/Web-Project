@@ -1,9 +1,10 @@
 import React, { memo, useEffect, useState } from 'react'
 import icons from '../../ultils/icons'
-import { useSelector } from 'react-redux'
+import { useSelector} from 'react-redux'
 import { useParams, createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { creatSlug } from '../../ultils/helper'
-import { apiGetProducts } from '../../apis'
+import { apiGetProducts} from '../../apis'
+import { getBrands } from '../../store/brand/asyncActions'
 
 
 const { AiOutlineDown, IoSearchCircleOutline } = icons
@@ -13,8 +14,9 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
   const [params] = useSearchParams()
   const { category } = useParams()
   const { categories } = useSelector(state => state.app)
+  const { brands } = useSelector(state => state.brand)
   const [selected, setSelected] = useState([])
-  const [brands, setBrands] = useState([])
+  const [selectBrands, setSelectBrands] = useState([])
   const [highestPrice, setHighestPrice] = useState(null)
   const [price, setPrice] = useState({
     from: '',
@@ -27,8 +29,8 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
   }
   const handleSelectBrand = (e) => {
     const alreadyEl = brands.find(el => el === e.target.value)
-    if (alreadyEl) setBrands(prev => prev.filter(el => el !== e.target.value))
-    else setBrands(prev => [...prev, e.target.value])
+    if (alreadyEl) setSelectBrands(prev => prev.filter(el => el !== e.target.value))
+    else setSelectBrands(prev => [...prev, e.target.value])
   }
   const handleClick = () => {
     const data = {}
@@ -67,18 +69,19 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
   }, [selected])
 
   useEffect(() => {
-    if (brands.length > 0) {
-      queries.brand = brands.join(',')
+    if (selectBrands.length > 0) {
+      queries.brand = selectBrands.join(',')
       navigateSearch()
     } else {
       delete queries.brand
       navigateSearch()
     }
-  }, [brands])
+  }, [selectBrands])
 
   useEffect(() => {
     if(type === 'input') fecthHighestPriceProduct()
   }, [type])
+
   return (
     <div
       className='p-3 cursor-pointer text-xs relative border border-gray-800 flex items-center justify-between gap-6'
@@ -136,27 +139,27 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
         </div>}
         {type === 'checkboxbrand' && <div className='text-sm'>
           <div className='p-4 items-center flex justify-center gap-8 border-b'>
-            <span className='whitespace-nowrap'>{`${brands.length} selected`}</span>
+            <span className='whitespace-nowrap'>{`${selectBrands.length} selected`}</span>
             <span onClick={e => {
               e.stopPropagation()
-              setBrands([])
+              setSelectBrands([])
             }} className='underline cursor-pointer hover:text-main'>Reset</span>
           </div>
           <div onClick={e => e.stopPropagation()} className='flex flex-col gap-4 mt-4'>
-            {categories?.find((el => creatSlug(el.title) === category))?.brand?.map((el, index) => (
+            {brands?.map((el, index) => (
               <div className='flex gap-2 items-center'>
                 <span>
                   <input
                     type='checkbox'
                     key={index}
                     className='w-4 h-4 rounded focus:ring-blue-500'
-                    value={el}
-                    id={el}
+                    value={el.title}
+                    id={el._id}
                     onChange={handleSelectBrand}
-                    checked={brands.some(selectedItem => selectedItem === el)}
+                    checked={selectBrands.some(selectedItem => selectedItem === el.title)}
                   />
                 </span>
-                <label htmlFor={el}>{el}</label>
+                <label htmlFor={el._id}>{el.title}</label>
               </div>
             ))}
           </div>
