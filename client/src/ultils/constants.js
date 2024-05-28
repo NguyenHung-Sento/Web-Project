@@ -1,6 +1,11 @@
 import icons from "./icons"
 import path from "./path"
 
+export const tabs = [
+    { id: 1, name: 'bán chạy' },
+    { id: 2, name: 'sản phẩm mới' },
+]
+
 export const navigation = [
     {
         id: 1,
@@ -27,7 +32,7 @@ export const productInfoTabs = [
     },
     {
         id: 2,
-        value: 'Chỉ định',
+        value: 'Lưu ý',
         content: '2'
     },
 ]
@@ -60,7 +65,7 @@ export const sorts = [
     },
 ]
 
-const {AiOutlineDashboard, TbBrandProducthunt, FaUsersRectangle, RiBillLine} = icons
+const {AiOutlineDashboard, TbBrandProducthunt, FaUsersRectangle, RiBillLine, BsCart4, PiUserListLight, LuListPlus} = icons
 export const adminSidebar = [
     {
         id: 1,
@@ -99,6 +104,39 @@ export const adminSidebar = [
         path: `/${path.ADMIN}/${path.MANAGE_ORDERS}`,
         icon: <RiBillLine />
     },
+
+]
+
+export const memberSidebar = [
+    {
+        id: 1,
+        type: 'SINGLE',
+        text: 'Cá nhân',
+        path: `/${path.MEMBER}/${path.PERSONAL}`,
+        icon: <PiUserListLight />
+    },
+    {
+        id: 2,
+        type: 'SINGLE',
+        text: 'Giỏ hàng',
+        path: `/${path.MEMBER}/${path.MY_CART}`,
+        icon: <BsCart4 />
+    },
+    {
+        id: 3,
+        type: 'SINGLE',
+        text: 'Lịch sử mua hàng',
+        path: `/${path.MEMBER}/${path.HISTORY}`,
+        icon: <RiBillLine />
+    },
+    {
+        id: 4,
+        type: 'SINGLE',
+        text: 'Danh sách yêu thích',
+        path: `/${path.MEMBER}/${path.WISHLIST}`,
+        icon: <LuListPlus />
+    },
+
 
 ]
 

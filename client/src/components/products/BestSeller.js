@@ -5,11 +5,9 @@ import banner1 from '../../assets/banner1.jpg'
 import banner2 from '../../assets/banner2.jpg'
 import banner3 from '../../assets/banner3.jpg'
 import event from '../../assets/event.png'
+import clsx from 'clsx'
+import { tabs } from '../../ultils/constants'
 
-const tabs = [
-    { id: 1, name: 'bán chạy' },
-    { id: 2, name: 'sản phẩm mới' },
-]
 
 
 const BestSeller = () => {
@@ -33,14 +31,14 @@ const BestSeller = () => {
     useEffect(() => {
         if (activedTab === 1) setProducts(bestSellers)
         if (activedTab === 2) setProducts(newProducts)
-    }, [activedTab])
+    }, [activedTab, bestSellers, newProducts])
     return (
         <div className='w-full flex-auto'>
             <div className='flex text-[20px] ml-[-32px]'>
                 {tabs.map(el => (
                     <span
                         key={el.id}
-                        className={`font-semibold capitalize px-8 cursor-pointer text-gray-400 ${activedTab === el.id ? 'text-cyan-700 underline underline-offset-8' : ''}`}
+                        className={clsx('font-semibold capitalize px-8 cursor-pointer text-gray-400' ,activedTab === el.id && 'text-main underline underline-offset-8')}
                         onClick={() => setActivedTab(el.id)}
                     >{el.name}</span>
                 ))}

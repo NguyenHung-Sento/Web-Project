@@ -1,6 +1,6 @@
 import React, { memo } from 'react'
 import clsx from 'clsx'
-import { useSearchParams, useNavigate, createSearchParams, useLocation } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 const PagiItem = ({ children, page, handlePagination }) => {
   const [params] = useSearchParams()

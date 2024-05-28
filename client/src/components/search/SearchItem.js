@@ -4,7 +4,7 @@ import { useSelector} from 'react-redux'
 import { useParams, createSearchParams, useNavigate, useSearchParams } from 'react-router-dom'
 import { creatSlug } from '../../ultils/helper'
 import { apiGetProducts} from '../../apis'
-import { getBrands } from '../../store/brand/asyncActions'
+
 
 
 const { AiOutlineDown, IoSearchCircleOutline } = icons

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Login, Home, Public, Products, About, DetailProduct, ResetPassword } from './pages/public';
 import { ManageOrders, ManageUsers, ManageProducts, AdminLayout, CreateProducts, Dashboard } from './pages/admin';
-import { MemberLayout, Personal } from './pages/member';
+import { MemberLayout, MyCart, Personal, History, Wishlist } from './pages/member';
 import path from './ultils/path';
 import { getCategories} from './store/app/asyncActions';
 import { getBrands } from './store/brand/asyncActions';
@@ -36,6 +36,9 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />
+          <Route path={path.MY_CART} element={<MyCart />} />
+          <Route path={path.HISTORY} element={<History />} />
+          <Route path={path.WISHLIST} element={<Wishlist />} />
         </Route>
         <Route path={path.LOGIN} element={<Login />} />
       </Routes>
@@ -46,7 +49,7 @@ function App() {
         newestOnTop={false}
         closeOnClick
         rtl={false}
-        pauseOnFocusLoss
+        pauseOnFocusLoss={false}
         draggable
         pauseOnHover
         theme="light"

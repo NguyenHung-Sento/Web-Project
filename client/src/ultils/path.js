@@ -20,6 +20,9 @@ const path = {
     //member
     MEMBER:'member',
     PERSONAL: 'personal',
+    MY_CART: 'my-cart',
+    WISHLIST: 'wishlist',
+    HISTORY: 'history'
 
 }
 

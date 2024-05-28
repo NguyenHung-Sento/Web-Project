@@ -13,7 +13,7 @@ export const validate = (payload, setInvalidFields) => {
     const formatPayload = Object.entries(payload)
 
     for (let arr of formatPayload) {
-        if (arr[1].trim() === '') {
+        if ((typeof arr[1] === 'string' && arr[1].trim() === '') || (Array.isArray(arr[1]) && arr[1].length === 0)) {
             invalids++
             newInvalidFields.push({ name: arr[0], mes: 'Require ' })
         }
@@ -21,8 +21,15 @@ export const validate = (payload, setInvalidFields) => {
     for (let arr of formatPayload) {
         switch (arr[0]) {
             case 'email':
-                const regex = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-                if (!arr[1].toLowerCase().match(regex)) {
+                const regexEmail = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+                if (!arr[1].toLowerCase().match(regexEmail)) {
+                    invalids++
+                    newInvalidFields.push({ name: arr[0], mes: 'Invalid ' })
+                }
+                break;
+            case 'mobile':
+                const regexMobile = /^[62|0]+\d{9}/gi
+                if (!arr[1].toLowerCase().match(regexMobile)) {
                     invalids++
                     newInvalidFields.push({ name: arr[0], mes: 'Invalid ' })
                 }
@@ -49,9 +56,9 @@ export const validate = (payload, setInvalidFields) => {
 
 export function getBase64(file) {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
     });
-  }
+}

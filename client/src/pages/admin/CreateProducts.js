@@ -13,20 +13,20 @@ const CreateProducts = () => {
   const { categories } = useSelector(state => state.app)
   const { brands } = useSelector(state => state.brand)
   const [products, setProducts] = useState(null)
+  const [hoverElm, setHoverElm] = useState(null)
+  const [fileCount, setFileCount] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [invalidFields, setInvalidFields] = useState([])
   const [payload, setPayload] = useState({
-    description: []
+    description: ''
   })
   const [details, setDetails] = useState({
     details: ''
   })
-  const [invalidFields, setInvalidFields] = useState([])
   const [preview, setPreview] = useState({
     thumb: null,
     images: []
   })
-  const [hoverElm, setHoverElm] = useState(null)
-  const [fileCount, setFileCount] = useState(0)
-  const [loading, setLoading] = useState(false)
 
   const changeValue = useCallback((e) => {
     setPayload(e)
@@ -36,47 +36,6 @@ const CreateProducts = () => {
     setDetails(e)
   }, [details])
 
- 
-
-  const handleCreateProduct = async (data) => {
-    const invalids = validate(payload, setInvalidFields)
-    if (invalids === 0) {
-      if (data.category) data.category = categories?.find(el => el._id === data.category)?.title
-      const handlePayload = {
-        ...data,
-        ...payload,
-        description: [payload.description, details.details]
-      };
-      const {description, ...finalPayload} = handlePayload
-      console.log(finalPayload)
-      const formData = new FormData()
-      for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1])
-      if (finalPayload.thumb) formData.append('thumb', finalPayload.thumb[0])
-      if (finalPayload.images) {
-        for (let image of finalPayload.images) formData.append('images', image)
-      }
-      if (description) {
-        for (let text of description) formData.append('description', text)
-      }
-      if (products.some(product => product.title.toLowerCase() === finalPayload.title.toLowerCase())) {
-        toast.error('Product is already exist')
-      } else {
-        setLoading(true)
-        const response = await apiCreateProduct(formData)
-        if (response.success) {
-          setLoading(false)
-          toast.success('Product created successfully')
-          reset()
-          setPreview({
-            thumb: null,
-            images: []
-          })
-        } else {
-          toast.error('Failed to create product')
-        }
-      }
-    }
-  }
 
   const handlePreviewThumb = async (file) => {
     if (!file) return
@@ -120,6 +79,45 @@ const CreateProducts = () => {
   }
 
 
+  const handleCreateProduct = async (data) => {
+    const invalids = validate({ ...payload, ...details }, setInvalidFields)
+    if (invalids === 0) {
+      if (data.category) data.category = categories?.find(el => el._id === data.category)?.title
+      const handlePayload = {
+        ...data,
+        ...payload,
+        description: [payload.description, details.details]
+      };
+      const { description, ...finalPayload } = handlePayload
+      const formData = new FormData()
+      for (let i of Object.entries(finalPayload)) formData.append(i[0], i[1])
+      if (finalPayload.thumb) formData.append('thumb', finalPayload.thumb[0])
+      if (finalPayload.images) {
+        for (let image of finalPayload.images) formData.append('images', image)
+      }
+      if (description) {
+        for (let text of description) formData.append('description', text)
+      }
+      if (products.some(product => product.title.toLowerCase() === finalPayload.title.toLowerCase())) {
+        toast.error('Product is already exist')
+      } else {
+        setLoading(true)
+        const response = await apiCreateProduct(formData)
+        if (response.success) {
+          setLoading(false)
+          toast.success(response.mes)
+          reset()
+          setPreview({
+            thumb: null,
+            images: []
+          })
+        } else {
+          setLoading(false)
+          toast.error(response.mes)
+        }
+      }
+    }
+  }
   useEffect(() => {
     handlePreviewThumb(watch('thumb')[0])
   }, [watch('thumb')])
@@ -141,10 +139,10 @@ const CreateProducts = () => {
 
   return (
     <div className='w-full'>
-       {loading && <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <Loading size={50} />
-        </div>}
-      <h1 className='h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
+      {loading && <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <Loading size={50} />
+      </div>}
+      <h1 className='bg-white text-gray-800 h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
         <span>Create products</span>
       </h1>
       <div className='p-4'>
@@ -230,7 +228,7 @@ const CreateProducts = () => {
             />
             <Select
               label='Thương hiệu'
-              options={brands?.map(el => ({ code: el._id, value: el.title }))}
+              options={brands?.map(el => ({ code: el.title, value: el.title }))}
               register={register}
               id='brand'
               validate={{
@@ -242,20 +240,22 @@ const CreateProducts = () => {
             />
           </div>
           <div className='flex flex-col gap-6'>
-          <MarkdownEditor
-            nameKey='description'
-            changeValue={changeValue}
-            label='Mô tả'
-            invalidFields={invalidFields}
-            setInvalidFields={setInvalidFields}
-          />
-          <MarkdownEditor
-            nameKey='details'
-            changeValue={changeDetails}
-            label='Chi tiết sản phẩm'
-            invalidFields={invalidFields}
-            setInvalidFields={setInvalidFields}
-          />
+            <MarkdownEditor
+              nameKey='description'
+              changeValue={changeValue}
+              label='Mô tả'
+              invalidFields={invalidFields}
+              setInvalidFields={setInvalidFields}
+              value={payload.description}
+            />
+            <MarkdownEditor
+              nameKey='details'
+              changeValue={changeDetails}
+              label='Chi tiết sản phẩm'
+              invalidFields={invalidFields}
+              setInvalidFields={setInvalidFields}
+              value={details.details}
+            />
           </div>
           <div className='flex flex-col gap-2 mt-8'>
             <label className='font-semibold' htmlFor='thumb'>Tải lên ảnh đại diện</label>

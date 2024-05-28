@@ -9,7 +9,7 @@ const Select = ({label, options=[], register, errors, id, validate, style, fullW
         id={id}
         {...register(id, validate)}
         className={clsx('form-select my-auto px-4 py-2 rounded-md border border-gray-300 focus:ring focus:ring-cyan-500 focus:border-cyan-500 transition-shadow', fullWidth && 'w-full',style)}
-        defaultValue={defaultValue} 
+        defaultValue={defaultValue || ''}
         >
             {defaultSelect && <option value=''>---Chọn---</option>}
             {options.map(el => (

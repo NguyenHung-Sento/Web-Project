@@ -1,7 +1,5 @@
-const { response } = require('express')
 const Product = require('../models/product')
 const asyncHandler = require('express-async-handler')
-const { Query } = require('mongoose')
 const slugify = require('slugify')
 
 const createProduct = asyncHandler(async(req, res) =>{
@@ -16,11 +14,10 @@ const createProduct = asyncHandler(async(req, res) =>{
     const newProduct = await Product.create(req.body)
     return res.status(200).json({
         success : newProduct ? true : false,
-        createdProduct : newProduct ? newProduct : 'Cannot create new product'
+        mes : newProduct ? 'Product created successfully' : 'Cannot create new product'
     })
 })
 
-//Lấy sản phẩm có lọc, có sắp xếp
 const getProduct = asyncHandler(async(req, res) =>{
     const {pid} = req.params
     const product = await Product.findById(pid)
@@ -30,6 +27,7 @@ const getProduct = asyncHandler(async(req, res) =>{
     })
 })
 
+//Lấy sản phẩm có lọc, có sắp xếp
 const getProducts = asyncHandler(async(req, res) =>{
     const queries = {...req.query}
 
@@ -106,12 +104,15 @@ const getProducts = asyncHandler(async(req, res) =>{
 
 const updateProduct = asyncHandler(async(req, res) =>{
     const {pid} = req.params
-    id (req.body && req.body.title) 
+    const files = req?.files
+    if(files?.thumb) req.body.thumb = files?.thumb[0]?.path
+    if(files?.images) req.body.images = files?.images?.map(el => el.path)
+    if (req.body && req.body.title) 
         req.body.slug = slugify(req.body.title)
     const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, {new: true})
     return res.status(200).json({
         success : updatedProduct ? true : false,
-        updatedProduct : updatedProduct ? updatedProduct : 'Cannot update product'
+        mes : updatedProduct ? 'Product updated successfully' : 'Cannot update product'
     })
 })
 
@@ -120,7 +121,7 @@ const deleteProduct = asyncHandler(async(req, res) =>{
     const deletedProduct = await Product.findByIdAndDelete(pid, req.body, {new: true})
     return res.status(200).json({
         success : deletedProduct ? true : false,
-        deletedProduct : deletedProduct ? deletedProduct : 'Cannot delete product'
+        mes : deletedProduct ? 'Product deleted successfully' : 'Cannot delete product'
     })
 })
 

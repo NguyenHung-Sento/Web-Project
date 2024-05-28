@@ -25,6 +25,7 @@ const Login = () => {
   const [invalidFields, setInvalidFields] = useState([])
   const [isForgorPassword, setIsForgorPassword] = useState(false)
   const [isRegister, setIsRegister] = useState(false)
+  const [isLoginWithMobile, setIsLoginWithMobile] = useState(false)
   const [email, setEmail] = useState('')
   const resetPayload = () => {
     setPayload({
@@ -47,8 +48,10 @@ const Login = () => {
   }
 
   const handleSubmit = useCallback(async () => {
-    const { firstname, lastname, mobile, confirmPassword, ...data } = payload
-    const invalids = isRegister ? validate(payload, setInvalidFields) : validate(data, setInvalidFields)
+    const { firstname, lastname, confirmPassword, ...data } = payload
+    const {email, ...payloadMobileLogin} = data
+    const {mobile, ...payloadEmailLogin} = data
+    const invalids = isRegister ? validate(payload, setInvalidFields) : (isLoginWithMobile ? validate(payloadMobileLogin, setInvalidFields) : validate(payloadEmailLogin, setInvalidFields))
 
     if (invalids === 0) {
       if (isRegister) {
@@ -145,15 +148,15 @@ const Login = () => {
               setInvalidFields={setInvalidFields}
             />
           </div>}
-          <InputField
+          {!isLoginWithMobile && <InputField
             value={payload.email}
             setValue={setPayload}
             nameKey='email'
             fullWidth
             invalidFields={invalidFields}
             setInvalidFields={setInvalidFields}
-          />
-          {isRegister && <InputField
+          />}
+          {(isRegister||isLoginWithMobile) && <InputField
             value={payload.mobile}
             setValue={setPayload}
             nameKey='mobile'
@@ -186,17 +189,37 @@ const Login = () => {
             fw
           />
           <div className='flex items-center justify-between my-2 w-full text-sm'>
-            {!isRegister && <span onClick={() => { setIsForgorPassword(true) }} className='text-gray-500 hover:underline cursor-pointer'>Quên mật khẩu?</span>}
+            {!isRegister && <span 
+            onClick={() => { setIsForgorPassword(true) }} 
+            className='text-gray-500 hover:underline cursor-pointer'
+            >Quên mật khẩu?</span>}
+            {(!isRegister && !isLoginWithMobile) && <span 
+            onClick={() => { 
+              setIsLoginWithMobile(true) 
+              resetPayload()
+            }} 
+            className='text-gray-500 hover:underline cursor-pointer'
+            >Đăng nhập qua SĐT?</span>}
+            {isLoginWithMobile && <span 
+            onClick={() => { 
+              setIsLoginWithMobile(false)
+              resetPayload() 
+            }} 
+            className='text-gray-500 hover:underline cursor-pointer'
+            >Đăng nhập qua mail?</span>}
             {!isRegister && <span
               className='text-gray-500 hover:underline cursor-pointer'
-              onClick={() => setIsRegister(true)}
+              onClick={() => {
+                setIsRegister(true) 
+                setIsLoginWithMobile(false)
+              }}
             >Tạo tài khoản</span>}
             {isRegister && <span
               className='text-gray-500 w-full text-center hover:underline cursor-pointer'
               onClick={() => setIsRegister(false)}
             >Về đăng nhập</span>}
           </div>
-          <Link className='text-gray-500 w-full text-center hover:underline cursor-pointer text-sm' to={`/${path.HOME}`}>Về trang chủ</Link>
+          <Link className='text-gray-500 w-full text-center mt-5 hover:underline cursor-pointer text-sm' to={`/${path.HOME}`}>Về trang chủ</Link>
         </div>
       </div>
     </div>

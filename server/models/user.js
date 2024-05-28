@@ -35,8 +35,7 @@ var userSchema = new mongoose.Schema({
         quantity: Number
     }],
     address:{
-        type:Array,
-        default: [],
+        type:String,
     },
     wishlist:[
         {type : mongoose.Types.ObjectId, ref: 'Product'}

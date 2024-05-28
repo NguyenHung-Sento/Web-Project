@@ -16,6 +16,9 @@ module.exports = {
       roman: 'upper-roman',
     },
     extend: {
+      userSelect: {
+        none: 'none',
+      },
       width: {
         main: '1220px',
       },
