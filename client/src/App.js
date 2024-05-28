@@ -1,23 +1,29 @@
 import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import { Login, Home, Public, Products, About, DetailProduct, ResetPassword } from './pages/public';
+import { Login, Home, Public, Products, About, DetailProduct, ResetPassword, DetailCart } from './pages/public';
 import { ManageOrders, ManageUsers, ManageProducts, AdminLayout, CreateProducts, Dashboard } from './pages/admin';
 import { MemberLayout, MyCart, Personal, History, Wishlist } from './pages/member';
 import path from './ultils/path';
 import { getCategories} from './store/app/asyncActions';
 import { getBrands } from './store/brand/asyncActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Cart } from './components';
+import { showCart } from './store/app/appSlice';
 
 function App() {
+  const {isShowCart} = useSelector(state => state.app)
   const dispacth = useDispatch()
   useEffect(() => {
     dispacth(getCategories())
     dispacth(getBrands())
   }, [])
   return (
-    <div className="min-h-screen font-main">
+    <div className="min-h-screen font-main relative">
+      {isShowCart && <div onClick={() => dispacth(showCart())} className='fixed inset-0 bg-black bg-opacity-40 z-50 flex justify-end'>
+        <Cart />
+      </div>}
       <Routes>
         <Route path={path.PUBLIC} element={<Public />}>
           <Route path={path.HOME} element={<Home />} />
@@ -25,6 +31,7 @@ function App() {
           <Route path={path.PRODUCTS} element={<Products />} />
           <Route path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE} element={<DetailProduct />} />
           <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
+          <Route path={path.DETAIL_CART} element={<DetailCart />} />
           <Route path={path.ALL} element={<Home />} />
         </Route>
         <Route path={path.ADMIN} element={<AdminLayout />}>

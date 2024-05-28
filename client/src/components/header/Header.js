@@ -3,11 +3,14 @@ import logo from '../../assets/logo.png'
 import icons from '../../ultils/icons'
 import { Link } from 'react-router-dom'
 import path from '../../ultils/path'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { showCart } from '../../store/app/appSlice'
 
 const { FaPhone, MdEmail, BsCart4, FaCircleUser, MdAnalytics } = icons
 const Header = () => {
   const { current } = useSelector(state => state.user)
+  const {isShowCart} = useSelector(state => state.app)
+  const dispacth = useDispatch()
   return (
     <div className='w-main flex justify-between h-[140px] py-[35px]'>
       <Link to={`/${path.HOME}`}>
@@ -30,9 +33,9 @@ const Header = () => {
         </div>
         {current && (
           <Fragment>
-            <div className='flex items-center px-6 border-r justify-center gap-2 cursor-pointer relative group'>
+            <div onClick={() => dispacth(showCart())} className='flex items-center px-6 border-r justify-center gap-2 cursor-pointer relative group'>
               <BsCart4 color='#156082' size={24} />
-              <span>0 items</span>
+              <span>{`${current?.cart?.length || 0} item(s)`}</span>
               <div className='absolute bg-black bg-opacity-75 text-white text-xs px-2 py-1 opacity-0 group-hover:opacity-100 transition duration-300 rounded-md -top-10 left-1/2 transform -translate-x-1/2'>
                 Giỏ hàng
               </div>

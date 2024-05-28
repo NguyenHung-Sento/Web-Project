@@ -10,6 +10,7 @@ import { roles, blockStatus } from '../../ultils/constants'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import clsx from 'clsx';
+import { useSelector } from 'react-redux';
 
 const ManageUsers = () => {
   const { handleSubmit, register, formState: { errors, isDirty }, reset } = useForm({
@@ -22,6 +23,7 @@ const ManageUsers = () => {
     isBlocked: ''
   })
   const [params] = useSearchParams()
+  const {current} = useSelector(state => state.user)
   const [users, setUsers] = useState(null)
   const [queries, setQueries] = useState({ q: '' })
   const [editElm, setEditElm] = useState(null)
@@ -33,7 +35,11 @@ const ManageUsers = () => {
 
   const fetchUsers = async (params) => {
     const response = await apiGetUsers({ ...params, limit: +process.env.REACT_APP_LIMIT })
-    if (response.success) setUsers(response)
+    if (response.success) {
+      const filterUsers = response.users.filter(el => el._id !== current?._id)
+      const {users, ...info} = response
+      setUsers({...info, users: filterUsers})
+    }
   }
 
   const handleUpdate = async (data) => {
@@ -75,7 +81,6 @@ const ManageUsers = () => {
       reset(editElm)
     }
   }, [editElm, reset])
-
 
   return (
     <div className='w-full'>
@@ -210,7 +215,6 @@ const ManageUsers = () => {
                         register={register}
                         errors={errors}
                         id={'address'}
-                        validate={{ required: 'Require this field' }}
                         defaultValue={editElm?.address}
                         placeholder={'Address'}
                         fullWidth

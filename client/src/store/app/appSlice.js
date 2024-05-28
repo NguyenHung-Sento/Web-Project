@@ -5,10 +5,13 @@ export const appSlice = createSlice({
     name: 'app',
     initialState: {
         categories: null,
-        isLoading: false
+        isLoading: false,
+        isShowCart: false
     },
     reducers: {
-   
+        showCart: (state) => {
+            state.isShowCart = state.isShowCart === false ? true : false
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(actions.getCategories.pending, (state) => {
@@ -25,5 +28,5 @@ export const appSlice = createSlice({
 
     }
 })
-export const {} = appSlice.actions
+export const {showCart} = appSlice.actions
 export default appSlice.reducer

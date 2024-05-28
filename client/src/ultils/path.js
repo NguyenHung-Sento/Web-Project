@@ -7,6 +7,7 @@ const path = {
     ABOUT: 'about',
     DETAIL_PRODUCT__CATEGORY__PID__TITLE: ':category/:pid/:title',
     RESET_PASSWORD: 'reset-password/:token',
+    DETAIL_CART: 'my-cart',
 
 
     //admin

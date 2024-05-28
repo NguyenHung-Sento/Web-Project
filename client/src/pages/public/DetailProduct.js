@@ -50,7 +50,7 @@ const DetailProduct = () => {
     if (flag === 'minus' && quantity === 1) return
     if (flag === 'minus') setQuantity(prev => +prev - 1)
     if (flag === 'plus' && quantity < product?.quantity) setQuantity(prev => +prev + 1)
-  }, [quantity])
+  }, [quantity, product?.quantity])
 
   const handleThumbnailClick = (image) => {
     setSelectedImage(image)
@@ -83,9 +83,9 @@ const DetailProduct = () => {
               <h1 className='font-semibold text-[20px] text-neutral-900'>{`${product?.title}`}</h1>
               <h3 className='font-semibold text-[30px] text-[#0072BC]'>{`${formatMoney(product?.price)} VNĐ`}</h3>
               <p className='text-sm text-neutral-900'>{`Tồn kho ${formatSold(product?.quantity)} | Đã bán ${formatSold(product?.sold)} sản phẩm`}</p>
-              <div className='pl-5'>
-                {product?.description?.length > 1 && <div className='text-sm mb-8' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}></div>}
-              </div>
+              <ul className='list-disc pl-5'>
+                {product?.description?.length > 1 && <div className='text-sm line-clamp-6 mb-8' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}></div>}
+              </ul>
             </div>
           </div>
           <div className='w-full m-auto mt-8'>

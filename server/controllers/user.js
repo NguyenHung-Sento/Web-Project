@@ -13,8 +13,10 @@ const register = asyncHandler(async (req, res) => {
             mes: 'Missing inputs'
         })
 
-    const user = await User.findOne({ email })
-    if (user)
+    const emailExists = await User.findOne({ email })
+    const mobileExists = await User.findOne({ mobile })
+
+    if (emailExists || mobileExists)
         throw new Error('User has existed!')
     else {
         const newUser = await User.create(req.body)
@@ -53,13 +55,19 @@ const login = asyncHandler(async (req, res) => {
             userData: userData
         })
     } else {
-        throw new Error('Invalid credentials!')
+        throw new Error('Tài khoản hoặc mật khẩu không chính xác')
     }
 })
 
 const getCurrent = asyncHandler(async (req, res) => {
     const { _id } = req.user
-    const user = await User.findById({ _id }).select('-refreshToken -password')
+    const user = await User.findById({ _id }).select('-refreshToken -password').populate({
+        path: 'cart',
+        populate: {
+            path: 'product',
+            select: 'title thumb price'
+        }
+    })
     return res.status(200).json({
         success: user ? true : false,
         rs: user ? user : 'User not found'
@@ -202,16 +210,49 @@ const deleteUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
     const { _id } = req.user
     if (!_id || Object.keys(req.body).length === 0) throw new Error('Missing input')
-    const response = await User.findByIdAndUpdate(_id, req.body, { new: true }).select('-refreshToken -password -role')
+    const user = await User.findById(_id)
+    if (!user) throw new Error('User not found')
+
+    if (req.body.email) {
+        const emailExists = await User.findOne({ email: req.body.email, _id: { $ne: _id } })
+        if (emailExists) throw new Error('Email already exists!')
+    }
+
+    if (req.body.mobile) {
+        const mobileExists = await User.findOne({ mobile: req.body.mobile, _id: { $ne: _id } })
+        if (mobileExists) throw new Error('Mobile number already exists!')
+    }
+
+    if (req.body.password) {
+        user.password = req.body.password
+        await user.save()
+    } else {
+        const response = await User.findByIdAndUpdate(_id, req.body, { new: true }).select('-refreshToken -password -role')
+        return res.status(200).json({
+            success: response ? true : false,
+            mes: response ? 'Updated' : 'Somgthing went wrong'
+        })
+    }
     return res.status(200).json({
-        success: response ? true : false,
-        mes: response ? 'Updated' : 'Somgthing went wrong'
+        success: true,
+        mes: 'Updated'
     })
 })
 
 const updateUserByAdmin = asyncHandler(async (req, res) => {
     const { uid } = req.params
     if (Object.keys(req.body).length === 0) throw new Error('Missing input')
+
+    if (req.body.email) {
+        const emailExists = await User.findOne({ email: req.body.email, _id: { $ne: uid } })
+        if (emailExists) throw new Error('Email already exists!')
+    }
+
+    if (req.body.mobile) {
+        const mobileExists = await User.findOne({ mobile: req.body.mobile, _id: { $ne: uid } })
+        if (mobileExists) throw new Error('Mobile number already exists!')
+    }
+
     const response = await User.findByIdAndUpdate(uid, req.body, { new: true }).select('-refreshToken -password -role')
     return res.status(200).json({
         success: response ? true : false,
@@ -219,15 +260,6 @@ const updateUserByAdmin = asyncHandler(async (req, res) => {
     })
 })
 
-const updateUserAddress = asyncHandler(async (req, res) => {
-    const { _id } = req.user
-    if (!req.body.address) throw new Error('Missing input')
-    const response = await User.findByIdAndUpdate(_id, { $push: { address: req.body.address } }, { new: true }).select('-refreshToken -password -role')
-    return res.status(200).json({
-        success: response ? true : false,
-        mes: response ? response : 'Somgthing went wrong'
-    })
-})
 
 const updateCart = asyncHandler(async (req, res) => {
     const { _id } = req.user
@@ -239,15 +271,33 @@ const updateCart = asyncHandler(async (req, res) => {
         const response = await User.updateOne({ cart: { $elemMatch: alreadyProduct } }, { $set: { "cart.$.quantity": quantity } }, { new: true })
         return res.status(200).json({
             success: response ? true : false,
-            updatedUser: response ? response : 'Somgthing went wrong'
+            mes: response ? 'Updated cart' : 'Somgthing went wrong'
         })
     } else {
         const response = await User.findByIdAndUpdate(_id, { $push: { cart: { product: pid, quantity } } }, { new: true })
         return res.status(200).json({
             success: response ? true : false,
-            updatedUser: response ? response : 'Somgthing went wrong'
+            mes: response ? 'Updated cart' : 'Somgthing went wrong'
         })
     }
+})
+
+const removeProductInCart = asyncHandler(async (req, res) => {
+    const { _id } = req.user
+    const { pid } = req.params
+    const user = await User.findById(_id).select('cart')
+    const alreadyProduct = user?.cart?.find(el => el.product.toString() === pid)
+    if (!alreadyProduct) {
+        return res.status(200).json({
+            success: true,
+            mes: 'Updated cart'
+        })
+    }
+    const response = await User.findByIdAndUpdate(_id, { $pull: { cart: { product: pid } } }, { new: true })
+    return res.status(200).json({
+        success: response ? true : false,
+        mes: response ? 'Updated cart' : 'Somgthing went wrong'
+    })
 })
 
 module.exports = {
@@ -262,6 +312,6 @@ module.exports = {
     deleteUser,
     updateUser,
     updateUserByAdmin,
-    updateUserAddress,
-    updateCart
+    updateCart,
+    removeProductInCart
 }

@@ -16,6 +16,10 @@ module.exports = {
       roman: 'upper-roman',
     },
     extend: {
+      gridTemplateRows: {
+        '10': 'repeat(10, minmax(0, 1fr))',
+        'layout': '200px minmax(900px, 1fr) 100px',
+      },
       userSelect: {
         none: 'none',
       },
@@ -38,6 +42,16 @@ module.exports = {
         '8': '8 8 0%',
       },
       keyframes: {
+        'slide-top': {
+          '0%': {
+            '-webkit-transform':'translateY(0px)',
+                    transform: 'translateY(0px)',
+          },
+          '100%': {
+            '-webkit-transform': 'translateY(-100px)',
+                    transform: 'translateY(-100px)',
+          }
+        },
        'slide-right': {
           '0%': {
             '-webkit-transform':'translateX(-1000px)',
@@ -61,6 +75,7 @@ module.exports = {
         
       },
       animation: {
+        'slide-top': 'slide-top 0.2s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
         'slide-right': 'slide-right 0.5s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
         'scale-up-center': 'scale-up-center 0.1s cubic-bezier(0.390, 0.575, 0.565, 1.000) both'
       }

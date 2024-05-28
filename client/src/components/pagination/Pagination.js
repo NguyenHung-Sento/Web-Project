@@ -32,7 +32,7 @@ const Pagination = ({ totalCount }) => {
 
   return (
     <div className='flex w-main justify-between items-center'>
-      <span className='text-sm italic'>{`Showing ${range()} of ${totalCount} products`}</span>
+      <span className='text-sm italic'>{`Showing ${range()} of ${totalCount} items`}</span>
       <div className='flex space-x-2'>
         <button
           className={clsx(

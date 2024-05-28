@@ -16,7 +16,8 @@ const DealDaily = () => {
     const [second, setSecond] = useState(0)
     const [expireTime, setExpireTime] = useState(false)
     const fetchDealDaily = async () => {
-        const response = await apiGetProducts({ limit: 1, page: Math.round(Math.random() * 4) })
+        // const response = await apiGetProducts({ limit: 1, page: Math.round(Math.random() * 4) })
+        const response = await apiGetProducts({ limit: 1 })
         if (response.success) {
             setDealDaily(response.productDatas[0])
             const h = 23 - new Date().getHours()
@@ -72,6 +73,9 @@ const DealDaily = () => {
                     className='w-full object-contain'
                 />
                 <span className='line-clamp-1 text-center'>{dealDaily?.title}</span>
+                <span className='text-gray-500 text-[18px]'>
+                    <del>{`${formatMoney(dealDaily?.price * 1.3)} VNĐ`}</del>
+                </span>
                 <span className='text-main text-[20px]'>{`${formatMoney(dealDaily?.price)} VNĐ`}</span>
                 <span className='text-sm'>{`Đã bán ${formatSold(dealDaily?.sold)}`}</span>
             </div>

@@ -1,19 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button, InputForm } from '../../components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import clsx from 'clsx'
 import moment from 'moment'
 import { IoClose } from 'react-icons/io5'
-import { validate } from '../../ultils/helper'
+import { apiUpdateCurrent } from '../../apis'
+import { getCurrent } from '../../store/user/asyncActions'
+import { toast } from 'react-toastify'
 
 const Personal = () => {
   const { register: register1, formState: { errors: errors1, isDirty: isDirty1 }, reset: reset1, handleSubmit: handleSubmit1, watch: watch1 } = useForm()
   const { register: register2, formState: { errors: errors2, isDirty: isDirty2 }, reset: reset2, handleSubmit: handleSubmit2, watch: watch2 } = useForm()
   const { current } = useSelector(state => state.user)
+  const dispatch = useDispatch()
   const [changePassword, setChangePassword] = useState(false)
-  const handleUpdateInfo = (data) => {
-    console.log(data)
+  const handleUpdateInfo = async (data) => {
+    const response = await apiUpdateCurrent(data)
+    if(response.success){
+      dispatch(getCurrent())
+      toast.success(response.mes)
+    } else {
+      toast.error(response.mes)
+    }
   }
   const password  = watch1("password")
   useEffect(() => {
@@ -24,6 +33,10 @@ const Personal = () => {
       mobile: current?.mobile || '',
     })
   }, [current])
+
+  useEffect(() => {
+    reset1()
+  }, [changePassword])
 
   return (
     <div className='w-full relative'>

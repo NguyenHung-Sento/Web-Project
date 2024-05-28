@@ -22,8 +22,8 @@ const ResetPassword = () => {
           <input
             type='text'
             id='password'
-            className='w-[800px] pb-2 border-b outline-none'
-            placeholder='Exp: example@gmail.com'
+            className='w-[800px] px-4 py-2 rounded-md border border-gray-300 focus:ring focus:ring-cyan-500 focus:border-cyan-500 transition-shadow  mt-2 placeholder-gray-500 placeholder-italic outline-none'
+            placeholder='Enter password'
             value={password}
             onChange={e => setPassword(e.target.value)}
           />

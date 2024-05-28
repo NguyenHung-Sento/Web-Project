@@ -11,12 +11,12 @@ const Home = () => {
   const { categories } = useSelector(state => state.app)
 
   return (
-    <div>
-      {!isLoggedIn && <Popup /> }
+    <div className='relative'>
+      <div className='absolute z-50'>{!isLoggedIn && <Popup /> }</div>
       <div className='w-main flex'>
         <div className='flex flex-col gap-5 w-[25%] flex-auto '>
           <Sidebar />
-          {/* <DealDaily /> */}
+          <DealDaily />
         </div>
         <div className='flex flex-col gap-5 pl-5 w-[75%] flex-auto'>
           <Banner />

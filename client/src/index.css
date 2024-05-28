@@ -18,24 +18,26 @@
     color: gray;
     content: '\276F';
     background-color: #8fd6e7;
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     font-size: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 25px;
 }
 
 .custum-slider button.slick-prev::before {
     color:grey;
     content: '\276E';
     background-color: #8fd6e7;
-    width: 80px;
-    height: 80px;
+    width: 60px;
+    height: 60px;
     font-size: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 25px;
 }
 
 
