@@ -28,7 +28,7 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
     else setSelected(prev => [...prev, e.target.value])
   }
   const handleSelectBrand = (e) => {
-    const alreadyEl = brands.find(el => el === e.target.value)
+    const alreadyEl = selectBrands.find(el => el === e.target.value)
     if (alreadyEl) setSelectBrands(prev => prev.filter(el => el !== e.target.value))
     else setSelectBrands(prev => [...prev, e.target.value])
   }
@@ -46,10 +46,7 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
     if(response.success) setHighestPrice(response.productDatas[0]?.price)
   }
 
-  let param = []
-  for(let i of params.entries()) param.push(i)
-  const queries = {}
-  for(let i of param) queries[i[0]] = i[1]
+  const queries = Object.fromEntries([...params])
 
   const navigateSearch = () => {
     navigate({
@@ -84,7 +81,7 @@ const SearchItem = ({ name, activeClick, changeActiveFilter, type = 'checkbox' }
 
   return (
     <div
-      className='p-3 cursor-pointer text-xs relative border border-gray-800 flex items-center justify-between gap-6'
+      className='p-3 cursor-pointer text-xs relative border border-gray-800 flex items-center justify-between gap-6 rounded-md shadow-md select-none'
       onClick={() => changeActiveFilter(name)}
     >
       <span>{name}</span>

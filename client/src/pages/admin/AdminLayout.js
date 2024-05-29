@@ -16,7 +16,7 @@ const AdminLayout = () => {
 
   return (
     <div className='flex w-full bg-gray-100 min-h-screen relative'>
-      <div className="absolute top-0 right-0 m-4">
+      <div className="absolute top-0 right-0 m-4 z-20">
         <FaCircleUser size={24} className="cursor-pointer select-none" onClick={() => {setOpenMenu(!openMenu)}} />
         {openMenu && <div className="absolute w-[130px] flex flex-col gap-2 bg-white border border-gray-300 p-2 rounded shadow-lg right-0 mt-2 z-40">
           <div className="cursor-pointer hover:text-red-600" onClick={() => { dispatch(logout()) }}>Đăng xuất</div>

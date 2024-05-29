@@ -8,18 +8,22 @@ import { IoClose } from 'react-icons/io5'
 import { apiUpdateCurrent } from '../../apis'
 import { getCurrent } from '../../store/user/asyncActions'
 import { toast } from 'react-toastify'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 const Personal = () => {
   const { register: register1, formState: { errors: errors1, isDirty: isDirty1 }, reset: reset1, handleSubmit: handleSubmit1, watch: watch1 } = useForm()
   const { register: register2, formState: { errors: errors2, isDirty: isDirty2 }, reset: reset2, handleSubmit: handleSubmit2, watch: watch2 } = useForm()
   const { current } = useSelector(state => state.user)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const [changePassword, setChangePassword] = useState(false)
   const handleUpdateInfo = async (data) => {
     const response = await apiUpdateCurrent(data)
     if(response.success){
       dispatch(getCurrent())
       toast.success(response.mes)
+      if(searchParams.get('redirect')) navigate(searchParams.get('redirect'))
     } else {
       toast.error(response.mes)
     }

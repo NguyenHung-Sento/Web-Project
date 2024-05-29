@@ -22,7 +22,7 @@ const Product = ({ productDatas, isNew, normal }) => {
       showCancelButton: true,
       confirmButtonText: 'Đến đăng nhập'
     }).then((rs) => {
-      if(rs.isConfirmed) navigate(`${path.LOGIN}`)
+      if(rs.isConfirmed) navigate(`/${path.LOGIN}`)
     })
 
   }

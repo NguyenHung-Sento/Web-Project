@@ -1,13 +1,16 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { apiGetProduct } from '../../apis'
+import { createSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { apiGetProduct, apiUpdateCart } from '../../apis'
 import Slider from 'react-slick'
 import { formatMoney, formatSold } from '../../ultils/helper'
 import { Button, SelectQuantity, ProductInfomation } from '../../components'
 import { Breadcrumbs } from '../../components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 import DOMPurify from 'dompurify';
+import path from '../../ultils/path'
+import { toast } from 'react-toastify'
+import { getCurrent } from '../../store/user/asyncActions'
 
 const settings = {
   dots: false,
@@ -18,18 +21,41 @@ const settings = {
 };
 
 const DetailProduct = () => {
-
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+  const location = useLocation()
   const { pid, title } = useParams()
+  const {current} = useSelector(state => state.user)
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(null)
 
-  const handleOnClick = () => {
+  const handleOnClickBuy = () => {
     return Swal.fire({
       title: 'Thành công',
-      text: 'Hãy xem giỏ hàng của bạn',
+      text: 'Bây giờ bạn có thể theo dõi tình trạng đơn hàng của mình',
       icon: 'success'
     })
+  }
+  const handleUpdateCart = async() => {
+    if(!current) return Swal.fire({
+      title: 'Oops!',
+      text: 'Vui lòng đăng nhập',
+      icon: 'info',
+      cancelButtonText: 'Không phải bây giờ',
+      showCancelButton: true,
+      confirmButtonText: 'Đến đăng nhập'
+    }).then(async(rs) => {
+      if(rs.isConfirmed) navigate({
+        pathname: `/${path.LOGIN}`,
+        search: createSearchParams({redirect: location.pathname}).toString()
+      })
+    })
+    const response = await apiUpdateCart({pid: pid, quantity: quantity})
+    if(response.success){
+      toast.success(response.mes)
+      dispatch(getCurrent())
+    } else toast.error(response.mes)
   }
 
   const fetchProductData = async () => {
@@ -84,7 +110,7 @@ const DetailProduct = () => {
               <h3 className='font-semibold text-[30px] text-[#0072BC]'>{`${formatMoney(product?.price)} VNĐ`}</h3>
               <p className='text-sm text-neutral-900'>{`Tồn kho ${formatSold(product?.quantity)} | Đã bán ${formatSold(product?.sold)} sản phẩm`}</p>
               <ul className='list-disc pl-5'>
-                {product?.description?.length > 1 && <div className='text-sm line-clamp-6 mb-8' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}></div>}
+                {product?.description?.length > 1 && <div className='text-sm mb-8' dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(product?.description[0]) }}></div>}
               </ul>
             </div>
           </div>
@@ -94,7 +120,8 @@ const DetailProduct = () => {
         </div>
         <div className='h-[500px] border rounded-lg w-1/5 flex flex-col gap-8 items-center'>
           <SelectQuantity quantity={quantity} handleQuantity={handleQuantity} handleChangeQuantity={handleChangeQuantity} />
-          <Button handleOnClick={handleOnClick} style={'px-4 py-2 my-2 rounded-md text-white bg-main text-semibold hover:bg-cyan-900 w-full'} children={'Mua hàng'} />
+          <Button fw handleOnClick={handleUpdateCart} style={'px-4 py-2 my-2 rounded-md text-white bg-main text-semibold hover:bg-cyan-900'} children={'Thêm vào giỏ'} />
+          <Button fw handleOnClick={handleOnClickBuy} style={'px-4 py-2 my-2 rounded-md text-white bg-red-600 hover:bg-red-700 text-semibold'} children={'Đặt hàng ngay'} />
         </div>
       </div>
 

@@ -2,6 +2,8 @@ import React from 'react'
 import { Sidebar, Banner, BestSeller, DealDaily, FeaturedProducts, Popup } from '../../components'
 import { useSelector } from 'react-redux'
 import icons from '../../ultils/icons'
+import { useNavigate, createSearchParams } from 'react-router-dom'
+import { creatSlug } from '../../ultils/helper'
 
 const {IoIosArrowForward} = icons
 
@@ -9,6 +11,15 @@ const Home = () => {
 
   const { isLoggedIn } = useSelector(state => state.user)
   const { categories } = useSelector(state => state.app)
+  const navigate = useNavigate()
+
+  const navigateSearch = (category, productType) => {
+    navigate({
+      pathname: `/${creatSlug(category)}`,
+      search: createSearchParams({productType}).toString()
+    })
+  }
+
 
   return (
     <div className='relative'>
@@ -40,7 +51,7 @@ const Home = () => {
                   <h4 className='font-semibold uppercase mb-2'>{el.title}</h4>
                   <ul className='text-sm'>
                     {el?.productType?.map(item => (
-                      <span key={item} className='flex gap-1 items-center text-gray-500'>
+                      <span onClick={() => navigateSearch(el.title, item)} key={item} className='cursor-pointer select-none hover:underline flex gap-1 items-center text-gray-500'>
                         <span><IoIosArrowForward /></span>
                         <li key={item}>{item}</li>
                       </span>
@@ -52,7 +63,6 @@ const Home = () => {
           ))}
         </div>
       </div>
-      <div className='w-full h-[500px]'></div>
     </div>
   )
 }

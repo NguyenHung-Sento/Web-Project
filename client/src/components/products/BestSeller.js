@@ -7,6 +7,8 @@ import banner3 from '../../assets/banner3.jpg'
 import event from '../../assets/event.png'
 import clsx from 'clsx'
 import { tabs } from '../../ultils/constants'
+import { useNavigate } from 'react-router-dom'
+import path from '../../ultils/path'
 
 
 
@@ -15,6 +17,7 @@ const BestSeller = () => {
     const [newProducts, setNewProducts] = useState(null)
     const [activedTab, setActivedTab] = useState(1)
     const [products, setProducts] = useState(null)
+    const navigate = useNavigate()
 
     const fecthProducts = async () => {
         const response = await Promise.all([apiGetProducts({ sort: '-sold' }), apiGetProducts({ sort: '-createdAt' })])
@@ -48,12 +51,12 @@ const BestSeller = () => {
             </div>
             <div className='flex flex-col mt-8 pt-2 gap-2 border-t-2 border-grey-400'>
                 <div>
-                    <img className='object-cover rounded-3xl' src={event} alt='event' />
+                    <img className='cursor-pointer select-none object-cover rounded-3xl' onClick={() => navigate(`${path.PRODUCTS}`)} src={event} alt='event' />
                 </div>
                 <div className='flex'>
-                    <div><img src={banner1} alt='banner' /></div>
-                    <div><img src={banner2} alt='banner' /></div>
-                    <div><img src={banner3} alt='banner' /></div>
+                    <div><img className='cursor-pointer select-none' onClick={() => window.scrollTo(0, 0)} src={banner1} alt='banner' /></div>
+                    <div><img className='cursor-pointer select-none' onClick={() => window.scrollTo(0, 0)} src={banner2} alt='banner' /></div>
+                    <div><img className='cursor-pointer select-none' onClick={() => window.scrollTo(0, 0)} src={banner3} alt='banner' /></div>
                 </div>
             </div>
         </div>

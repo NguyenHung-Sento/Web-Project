@@ -31,7 +31,6 @@ function App() {
           <Route path={path.PRODUCTS} element={<Products />} />
           <Route path={path.DETAIL_PRODUCT__CATEGORY__PID__TITLE} element={<DetailProduct />} />
           <Route path={path.RESET_PASSWORD} element={<ResetPassword />} />
-          <Route path={path.DETAIL_CART} element={<DetailCart />} />
           <Route path={path.ALL} element={<Home />} />
         </Route>
         <Route path={path.ADMIN} element={<AdminLayout />}>
@@ -43,7 +42,7 @@ function App() {
         </Route>
         <Route path={path.MEMBER} element={<MemberLayout />}>
           <Route path={path.PERSONAL} element={<Personal />} />
-          <Route path={path.MY_CART} element={<MyCart />} />
+          <Route path={path.MY_CART} element={<DetailCart />} />
           <Route path={path.HISTORY} element={<History />} />
           <Route path={path.WISHLIST} element={<Wishlist />} />
         </Route>
@@ -58,10 +57,9 @@ function App() {
         rtl={false}
         pauseOnFocusLoss={false}
         draggable
-        pauseOnHover
+        pauseOnHover={false}
         theme="light"
       />
-      <ToastContainer />
     </div>
   );
 }

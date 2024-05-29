@@ -3,7 +3,7 @@ import loginpage from '../../assets/loginpage.jpg'
 import { InputField, Button } from '../../components'
 import { apiRegister, apiLogin, apiForgotPassword } from '../../apis/user'
 import Swal from 'sweetalert2'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, useSearchParams } from 'react-router-dom'
 import path from '../../ultils/path'
 import { login } from '../../store/user/userSlice'
 import { useDispatch } from 'react-redux'
@@ -13,6 +13,7 @@ import { validate } from '../../ultils/helper'
 const Login = () => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
+  const [searchParams] = useSearchParams()
   const [payload, setPayload] = useState({
     email: '',
     password: '',
@@ -68,7 +69,7 @@ const Login = () => {
         const rs = await apiLogin(data)
         if (rs.success) {
           dispatch(login({ isLoggedIn: true, token: rs.accessToken, userData: rs.userData }))
-          navigate(`/${path.HOME}`)
+          searchParams.get('redirect') ? navigate(searchParams.get('redirect')) : navigate(`/${path.HOME}`)
         } else {
           Swal.fire('Oops~', rs.mes, 'error')
         }
