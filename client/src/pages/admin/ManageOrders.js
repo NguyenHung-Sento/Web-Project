@@ -53,7 +53,7 @@ const ManageOrders = () => {
   return (
     <div className='w-full'>
        <h1 className='bg-white text-gray-800 h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
-        <span>History</span>
+        <span>Manage orders</span>
       </h1>
       <div className='w-full p-4'>
         <div className='flex justify-end py-4 relative items-center'>
