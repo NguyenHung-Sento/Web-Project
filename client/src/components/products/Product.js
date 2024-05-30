@@ -48,7 +48,7 @@ const Product = ({ productDatas, isNew, normal, pid }) => {
           }}
           title='Thêm vào yêu thích'
         >
-          <SelectOption icon={<BsFillSuitHeartFill color={current?.wishlist?.some(i => i._id === pid ) ? 'red' : 'white'} />} />
+          <SelectOption icon={<BsFillSuitHeartFill color={current?.wishlist?.some(i => i._id === pid ) ? 'red' : ''} />} />
         </span>
       </div>}
       <Link

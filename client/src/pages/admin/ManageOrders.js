@@ -69,7 +69,7 @@ const ManageOrders = () => {
         </div>
       </div>
       <form onSubmit={handleSubmit(handleUpdate)} >
-      <div className='h-[70px] mb-4'>{editElm && <Button
+      <div className='h-[70px] mb-4'>{editElm && editElm.status === 'Processing' && <Button
             style={`mt-8 ${isDirty ? 'bg-red-600 hover:bg-red-700' : 'bg-gray-400 cursor-not-allowed'}`}
             type={isDirty ? 'submit' : 'button'}
             children={'Cập nhật'}
@@ -98,7 +98,7 @@ const ManageOrders = () => {
               </td>
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] max-h-[160px]'>{formatMoney(el.total)}</td>
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] max-h-[160px]'>
-              {editElm?._id === el._id ?
+              {editElm?._id === el._id  && editElm?.status === 'Processing'?
                       <Select
                         register={register}
                         errors={errors}
@@ -112,9 +112,9 @@ const ManageOrders = () => {
               </td>
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] max-h-[160px]'>{moment(el.createdAt).format('DD/MM/YYYY')}</td>
               <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
-              {editElm?._id === el._id ?
-                      <span onClick={() => setEditElm(null)} className='px-2 text-orange-600 hover:underline cursor-pointer'>Back</span> :
-                      <span onClick={() => setEditElm(el)} className='px-2 text-orange-600 hover:underline cursor-pointer'>Edit</span>
+              {editElm?._id === el._id?
+                      (el.status==='Processing'? <span onClick={() => setEditElm(null)} className='px-2 text-orange-600 hover:underline cursor-pointer'>Back</span>:<span onClick={() => setEditElm(null)} className='px-2 text-gray-600 hover:underline cursor-not-allowed'>Edit</span>) :
+                      <span onClick={() => setEditElm(el)} className={clsx('px-2', el?.status === 'Processing' ? 'text-orange-600 hover:underline cursor-pointer': 'text-gray-600 hover:underline cursor-not-allowed')}>Edit</span>
                     }
               </td>
             </tr>
