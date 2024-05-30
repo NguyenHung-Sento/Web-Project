@@ -5,7 +5,7 @@ import { formatMoney } from '../../ultils/helper'
 import Swal from 'sweetalert2'
 import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import path from '../../ultils/path'
-import { apiCreateOrder } from '../../apis'
+import { apiCreateOrder, apiUpdateCartMany } from '../../apis'
 
 
 const DetailCart = () => {
@@ -27,22 +27,33 @@ const DetailCart = () => {
           search: createSearchParams({ redirect: location?.pathname }).toString()
         })
       })
-    else{
-      const response = await apiCreateOrder(currentCart)
-      if(response.success)
-      return Swal.fire({
-        title: 'Thành công',
-        text: 'Bây giờ bạn có thể theo dõi tình trạng đơn hàng của mình',
-        icon: 'success'
-      })
+    else {
+      const response = await apiUpdateCartMany(currentCart)
+      if (response.success) {
+        const createOrder = await apiCreateOrder()
+        if (createOrder.success)
+          return Swal.fire({
+            title: 'Thành công',
+            text: 'Bây giờ bạn có thể theo dõi tình trạng đơn hàng của mình',
+            icon: 'success'
+          })
+        else
+          return Swal.fire({
+            title: 'Opps',
+            text: 'Đã có lỗi xảy ra, vui lòng thử lại sau',
+            icon: 'error'
+          })
+      }
     }
   }
-console.log(currentCart)
+
   return (
     <div className='w-full'>
       <div className='h-[81px] flex justify-center items-center bg-gray-100'>
-        <div className='w-main flex flex-col gap-2'>
-          <h3 className='font-semibold'>GIỎ HÀNG CỦA BẠN</h3>
+        <div className='w-full flex flex-col gap-2'>
+        <h1 className='bg-white text-gray-800 h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
+        <span>My cart</span>
+      </h1>
         </div>
       </div>
       <div className='flex flex-col border mt-8 my-8'>

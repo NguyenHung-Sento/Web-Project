@@ -123,7 +123,7 @@ const ManageUsers = () => {
             <tbody>
               {users?.users.map((el, index) => (
                 <tr key={el._id} className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}>
-                  <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] overflow-hidden overflow-ellipsis'>{index + 1}</td>
+                  <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] overflow-hidden overflow-ellipsis'>{(+params.get('page') > 1 ? +params.get('page') - 1 : 0)*process.env.REACT_APP_LIMIT + index + 1}</td>
                   <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] overflow-hidden overflow-ellipsis'>
                     {editElm?._id === el._id ?
                       <InputForm

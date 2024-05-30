@@ -5,7 +5,7 @@ import { IoClose } from 'react-icons/io5'
 import { useSearchParams } from 'react-router-dom'
 import { apiGetProducts, apiDeleteProduct } from '../../apis'
 import { formatMoney } from '../../ultils/helper'
-import UpdateProduct from './UpdateProduct' 
+import UpdateProduct from './UpdateProduct'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
@@ -20,7 +20,7 @@ const ManageProducts = () => {
   const handleClearInput = () => {
     setQueries(prev => ({ ...prev, search: '' }))
   }
-  
+
   const render = useCallback(() => {
     setUpdate(!update)
   })
@@ -45,7 +45,7 @@ const ManageProducts = () => {
   const queriesDebounce = useDebounce(queries.search, 300)
 
   const fetchProducts = async (params) => {
-    const response = await apiGetProducts({ ...params, limit: +process.env.REACT_APP_LIMIT, sort : '-createdAt' })
+    const response = await apiGetProducts({ ...params, limit: +process.env.REACT_APP_LIMIT, sort: '-createdAt' })
     if (response.success) setProducts(response)
   }
 
@@ -59,11 +59,11 @@ const ManageProducts = () => {
   return (
     <div className='w-full flex flex-col relative min-h-screen'>
       {editElm && <div className='absolute inset-0 z-10 flex items-center justify-center bg-black bg-opacity-50'>
-          <div className='bg-gray-100 p-8 rounded-lg w-3/4 h-5/6 animate-scale-up-center overflow-auto relative'>
-            <UpdateProduct editElm={editElm} render={render} setEditElm={setEditElm} />
-            <IoClose size={24} color='white' className='absolute border top-0 right-0 cursor-pointer bg-red-500' onClick={() => setEditElm(null)} />
-          </div>
-        </div>}
+        <div className='bg-gray-100 p-8 rounded-lg w-3/4 h-5/6 animate-scale-up-center overflow-auto relative'>
+          <UpdateProduct editElm={editElm} render={render} setEditElm={setEditElm} />
+          <IoClose size={24} color='white' className='absolute border top-0 right-0 cursor-pointer bg-red-500' onClick={() => setEditElm(null)} />
+        </div>
+      </div>}
       <h1 className='bg-white text-gray-800 h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
         <span>Manage products</span>
       </h1>
@@ -99,7 +99,7 @@ const ManageProducts = () => {
         <tbody>
           {products?.productDatas?.map((el, index) => (
             <tr key={el._id} className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}>
-              <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px]'>{index + 1}</td>
+              <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px]'>{(+params.get('page') > 1 ? +params.get('page') - 1 : 0)*process.env.REACT_APP_LIMIT + index + 1}</td>
               <td>
                 <img src={el.thumb} alt='thumb' className='px-6 py-4 object-contain' />
               </td>
@@ -120,10 +120,10 @@ const ManageProducts = () => {
         </tbody>
       </table>
       <div className='w-full my-6 pl-4'>
-          <Pagination
-            totalCount={products?.counts}
-          />
-        </div>
+        <Pagination
+          totalCount={products?.counts}
+        />
+      </div>
     </div>
   )
 }

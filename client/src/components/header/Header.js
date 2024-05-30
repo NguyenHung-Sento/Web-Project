@@ -9,7 +9,6 @@ import { showCart } from '../../store/app/appSlice'
 const { FaPhone, MdEmail, BsCart4, FaCircleUser, MdAnalytics } = icons
 const Header = () => {
   const { current } = useSelector(state => state.user)
-  const {isShowCart} = useSelector(state => state.app)
   const dispacth = useDispatch()
   return (
     <div className='w-main flex justify-between h-[140px] py-[35px]'>

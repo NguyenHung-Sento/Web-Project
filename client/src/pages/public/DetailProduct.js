@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { createSearchParams, useLocation, useNavigate, useParams } from 'react-router-dom'
-import { apiGetProduct, apiUpdateCart } from '../../apis'
+import { apiCreateSingleOrder, apiGetProduct, apiUpdateCart } from '../../apis'
 import Slider from 'react-slick'
 import { formatMoney, formatSold } from '../../ultils/helper'
 import { Button, SelectQuantity, ProductInfomation } from '../../components'
@@ -30,12 +30,52 @@ const DetailProduct = () => {
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(null)
 
-  const handleOnClickBuy = () => {
-    return Swal.fire({
-      title: 'Thành công',
-      text: 'Bây giờ bạn có thể theo dõi tình trạng đơn hàng của mình',
-      icon: 'success'
+ const handleOnClickBuy = async () => {
+  if(!current) return Swal.fire({
+    title: 'Oops!',
+    text: 'Vui lòng đăng nhập',
+    icon: 'info',
+    cancelButtonText: 'Không phải bây giờ',
+    showCancelButton: true,
+    confirmButtonText: 'Đến đăng nhập'
+  }).then(async(rs) => {
+    if(rs.isConfirmed) navigate({
+      pathname: `/${path.LOGIN}`,
+      search: createSearchParams({redirect: location.pathname}).toString()
     })
+  })
+    if (!current?.address)
+      return Swal.fire({
+        title: 'Oops!',
+        text: 'Vui lòng cập nhật địa chỉ của bạn',
+        icon: 'info',
+        cancelButtonText: 'Không phải bây giờ',
+        showCancelButton: true,
+        confirmButtonText: 'Đến cập nhật'
+      }).then((rs) => {
+        if (rs.isConfirmed) navigate({
+          pathname: `/${path.MEMBER}/${path.PERSONAL}`,
+          search: createSearchParams({ redirect: location?.pathname }).toString()
+        })
+      })
+    else {
+      const response = await apiUpdateCart({pid: pid, quantity: quantity})
+      if (response.success) {
+        const createOrder = await apiCreateSingleOrder({product: pid, count: quantity, title: title, thumb: product.thumb[0]})
+        if (createOrder.success)
+          return Swal.fire({
+            title: 'Thành công',
+            text: 'Bây giờ bạn có thể theo dõi tình trạng đơn hàng của mình',
+            icon: 'success'
+          })
+        else
+          return Swal.fire({
+            title: 'Opps',
+            text: 'Đã có lỗi xảy ra, vui lòng thử lại sau',
+            icon: 'error'
+          })
+      }
+    }
   }
   const handleUpdateCart = async() => {
     if(!current) return Swal.fire({
@@ -124,7 +164,7 @@ const DetailProduct = () => {
           <Button fw handleOnClick={handleOnClickBuy} style={'px-4 py-2 my-2 rounded-md text-white bg-red-600 hover:bg-red-700 text-semibold'} children={'Đặt hàng ngay'} />
         </div>
       </div>
-
+        
       <div className='h-[500px] w-full'></div>
     </div>
   )

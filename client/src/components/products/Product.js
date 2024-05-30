@@ -5,12 +5,16 @@ import labelBlue from '../../assets/newproductlabel.png'
 import { Link, useNavigate } from 'react-router-dom'
 import SelectOption from '../common/SelectOption'
 import { BsFillSuitHeartFill } from "react-icons/bs";
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Swal from 'sweetalert2'
 import path from '../../ultils/path'
+import { getCurrent } from '../../store/user/asyncActions'
+import { toast } from 'react-toastify'
+import { apiUpdateWishlist } from '../../apis'
 
-const Product = ({ productDatas, isNew, normal }) => {
+const Product = ({ productDatas, isNew, normal, pid }) => {
   const [isShowOption, setIsShowOption] = useState(false)
+  const dispatch = useDispatch()
   const {current} = useSelector(state => state.user)
   const navigate = useNavigate()
   const handleOnClickOption = async () => {
@@ -24,7 +28,11 @@ const Product = ({ productDatas, isNew, normal }) => {
     }).then((rs) => {
       if(rs.isConfirmed) navigate(`/${path.LOGIN}`)
     })
-
+    const response = await apiUpdateWishlist(pid)
+    if(response.success){
+      dispatch(getCurrent())
+      toast.success(response.mes)
+    } else toast.error(response.mes)
   }
   return (
     <div
@@ -40,7 +48,7 @@ const Product = ({ productDatas, isNew, normal }) => {
           }}
           title='Thêm vào yêu thích'
         >
-          <SelectOption icon={<BsFillSuitHeartFill />} />
+          <SelectOption icon={<BsFillSuitHeartFill color={current?.wishlist?.some(i => i._id === pid ) ? 'red' : 'white'} />} />
         </span>
       </div>}
       <Link

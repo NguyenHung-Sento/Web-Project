@@ -162,3 +162,18 @@ export const blockStatus = [
     }
 ]
 
+export const orderStatus = [
+    {
+        code: 'Processing',
+        value: 'Processing'
+    },
+    {
+        code: 'Cancelled',
+        value: 'Cancelled'
+    },
+    {
+        code: 'Succeed',
+        value: 'Succeed'
+    },
+]
+
