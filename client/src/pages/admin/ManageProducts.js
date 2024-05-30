@@ -97,7 +97,7 @@ const ManageProducts = () => {
           </tr>
         </thead>
         <tbody>
-          {products?.productDatas?.map((el, index) => (
+          {products?.productDatas.length > 0 ? products?.productDatas?.map((el, index) => (
             <tr key={el._id} className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}>
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px]'>{(+params.get('page') > 1 ? +params.get('page') - 1 : 0)*process.env.REACT_APP_LIMIT + index + 1}</td>
               <td>
@@ -116,7 +116,7 @@ const ManageProducts = () => {
                 <span onClick={() => hanldeDeleteProduct(el._id)} className='px-2 text-orange-600 hover:underline cursor-pointer'>Delete</span>
               </td>
             </tr>
-          ))}
+          )) : 'No products'}
         </tbody>
       </table>
       <div className='w-full my-6 pl-4'>

@@ -44,7 +44,7 @@ const Wishlist = () => {
       <h1 className='bg-white text-gray-800 h-[75px] flex justify-between items-center text-3xl font-bold px-4 border-b'>
         <span>Wishlist</span>
       </h1>
-      <div className='p-4 w-full grid grid-cols-5 gap-4'>
+      {current?.wishlist?.length > 0 ? <div className='p-4 w-full grid grid-cols-5 gap-4'>
         {current?.wishlist?.map((el) => (
           <div key={el._id} className='relative'>
 
@@ -57,7 +57,7 @@ const Wishlist = () => {
             <Button fw handleOnClick={() => handleUpdateCart(el._id)} style={'px-4 py-2 my-2 rounded-md text-white bg-main text-semibold hover:bg-cyan-900'} children={'Thêm vào giỏ'} />
           </div>
         ))}
-      </div>
+      </div> : 'No product'}
     </div>
   )
 }

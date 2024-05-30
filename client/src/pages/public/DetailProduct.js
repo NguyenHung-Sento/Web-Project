@@ -164,7 +164,6 @@ const DetailProduct = () => {
           <Button fw handleOnClick={handleOnClickBuy} style={'px-4 py-2 my-2 rounded-md text-white bg-red-600 hover:bg-red-700 text-semibold'} children={'Đặt hàng ngay'} />
         </div>
       </div>
-        
       <div className='h-[500px] w-full'></div>
     </div>
   )

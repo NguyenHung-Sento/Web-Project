@@ -121,7 +121,7 @@ const ManageUsers = () => {
               </tr>
             </thead>
             <tbody>
-              {users?.users.map((el, index) => (
+              {users?.users?.length > 0 ? users?.users.map((el, index) => (
                 <tr key={el._id} className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}>
                   <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] overflow-hidden overflow-ellipsis'>{(+params.get('page') > 1 ? +params.get('page') - 1 : 0)*process.env.REACT_APP_LIMIT + index + 1}</td>
                   <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] overflow-hidden overflow-ellipsis'>
@@ -245,7 +245,7 @@ const ManageUsers = () => {
                     <span onClick={() => handleDeleteUser(el._id)} className='px-2 text-orange-600 hover:underline cursor-pointer'>Delete</span>
                   </td>
                 </tr>
-              ))}
+              )): 'No users'}
             </tbody>
           </table>
         </form>

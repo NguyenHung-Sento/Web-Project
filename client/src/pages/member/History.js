@@ -61,7 +61,7 @@ const History = () => {
           </tr>
         </thead>
         <tbody>
-          {orders?.orders.map((el, index) => (
+          {orders?.orders.length > 0 ? orders?.orders.map((el, index) => (
             <tr key={el._id} className={index % 2 === 0 ? 'bg-gray-200' : 'bg-white'}>
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px]'>{(+params.get('page') > 1 ? +params.get('page') - 1 : 0)*process.env.REACT_APP_LIMIT + index + 1}</td>
               <td>
@@ -75,7 +75,7 @@ const History = () => {
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] max-h-[160px]'> <span className={clsx('italic', el.status === 'Processing' ? 'text-blue-700' :(el.status === 'Cancelled'?'text-red-700' : 'text-green-700'))}>{el.status === 'Processing' ? 'Processing' :(el.status === 'Cancelled'?'Cancelled' : 'Succeed')}</span></td>
               <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-600 max-w-[200px] max-h-[160px]'>{moment(el.createdAt).format('DD/MM/YYYY')}</td>
             </tr>
-          ))}
+          )) : 'No history'}
         </tbody>
       </table>
       <div className='w-full my-6 pl-4'>
